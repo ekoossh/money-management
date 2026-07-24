@@ -567,7 +567,7 @@ const renderTable = () => {
 
         const pctStr = c.ok ? fmtPct(c.pct)                              : '—';
         const lotStr = c.ok && c.lot > 0 ? c.lot.toLocaleString('id-ID') : '—';
-        const nomStr = c.ok && c.nom > 0 ? 'Rp ' + fmtIDR(c.nom)        : '—';
+        const nomStr = c.ok && c.nom > 0 ? fmtIDR(c.nom) : '—';
         const rowStatus = (row.status || 'order').toString().toLowerCase().trim();
 
         const tr = document.createElement('tr');
@@ -634,21 +634,22 @@ const renderTable = () => {
             </td>
             <td>
                 <div class="tp-cell">
-                    <div class="tp-val-top">${row.hargaBuy ? 'Rp ' + fmtIDR(row.hargaBuy) : '—'}</div>
+                                        <div class="tp-val-top">${row.hargaBuy ? fmtIDR(row.hargaBuy) : '—'}</div>
                     ${(() => {
                         const cUpper = (row.stockCode || '').toUpperCase();
                         const pInfo = stockPrices[cUpper];
                         if (!pInfo) return '<div class="tp-val-bot">—</div>';
-                        return `<div class="tp-val-bot${(() => {
-                            const chg = pInfo.changePct || 0;
-                            return chg > 0 ? ' up' : (chg < 0 ? ' down' : '');
-                        })()}">Rp ${fmtIDR(pInfo.price)}</div>`;
+                        const chg = pInfo.changePct || 0;
+                        const chgClass = chg > 0 ? ' up' : (chg < 0 ? ' down' : '');
+                        const chgStr = chg > 0 ? ` (+${chg.toFixed(1)}%)` : (chg < 0 ? ` (${chg.toFixed(1)}%)` : '');
+                        return `<div class="tp-val-bot${chgClass}">${fmtIDR(pInfo.price)}${chgStr}</div>`;
+                    })()}">Rp ${fmtIDR(pInfo.price)}</div>`;
                     })()}
                 </div>
             </td>
             <td>
                 <div class="tp-cell">
-                    <div class="tp-val-top">${row.stopLoss ? 'Rp ' + fmtIDR(row.stopLoss) : '—'}</div>
+                    <div class="tp-val-top">${row.stopLoss ? fmtIDR(row.stopLoss) : '—'}</div>
                     <div class="tp-val-bot">${pctStr}</div>
                 </div>
             </td>

@@ -1944,7 +1944,7 @@ body.font-kecil {
     color: var(--text-1);
 }
 .tp-val-bot {
-    font-size: calc(12px - var(--fs-diff, 0px));
+    font-size: calc(11px - var(--fs-diff, 0px));
     color: var(--text-3) !important;
 }
 .tp-val-bot.up { color: var(--up) !important; font-weight: 500; }
@@ -2481,9 +2481,10 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
 
 /* Tambah (Hijau) */
 .wl-actions .btn.btn-chip-green {
-    color: #a3e635 !important;
-    border-color: rgba(163,230,53,0.35) !important;
-    background: rgba(163,230,53,0.12) !important;
+    color: var(--bg-0) !important;
+    border-color: var(--accent) !important;
+    background: var(--accent) !important;
+    box-shadow: 0 4px 12px -4px var(--accent-glow) !important;
 }
 .wl-actions .btn.btn-chip-green:hover { background: rgba(163,230,53,0.2) !important; }
 

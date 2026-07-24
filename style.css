@@ -1256,7 +1256,7 @@ td.td-del  { text-align: center; }
     padding: 5px 13px;
     border-radius: 99px;
     font-size: calc(12px - var(--fs-diff, 0px));
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     border: 1px solid #232329;
     background: #18181d;
@@ -1282,7 +1282,7 @@ td.td-del  { text-align: center; }
 /* Count badge */
 .fc-count {
     font-size: calc(12px - var(--fs-diff, 0px));
-    font-weight: 700;
+    font-weight: 500;
     background: rgba(255,255,255,0.08);
     border-radius: 99px;
     padding: 1px 6px;
@@ -1945,7 +1945,7 @@ body.font-kecil {
 }
 .tp-val-bot {
     font-size: calc(11px - var(--fs-diff, 0px));
-    color: var(--text-3) !important;
+    color: var(--text-2) !important;
 }
 .tp-val-bot.up { color: var(--up) !important; font-weight: 500; }
 .tp-val-bot.down { color: var(--down) !important; font-weight: 500; }
@@ -2456,7 +2456,7 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
     padding: 5px 13px !important;
     border-radius: 99px !important;
     font-size: calc(12px - var(--fs-diff, 0px)) !important;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
     cursor: pointer !important;
     transition: all .15s cubic-bezier(.4,0,.2,1) !important;
 }

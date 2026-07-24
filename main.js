@@ -823,7 +823,7 @@ const renderTable = () => {
     qa('.edit-btn', body).forEach(btn => {
         btn.addEventListener('click', () => {
             const idx  = parseInt(btn.dataset.i);
-            openAddPopup(idx);
+            window.openAddPopup(idx);
         });
     });
 };
@@ -831,7 +831,7 @@ const renderTable = () => {
 /* ── Add/Edit Popup ────────────────────────────────────── */
 let editModeIdx = -1;
 
-const openAddPopup = (idx = -1, defaultCode = "", defaultPrice = "") => {
+window.openAddPopup = (idx = -1, defaultCode = "", defaultPrice = "") => {
     editModeIdx = idx;
     if (idx === -1) {
         $('ap-code').value = defaultCode || '';
@@ -932,7 +932,7 @@ $('ap-status-group').addEventListener('click', e => {
 });
 
 // Open
-$('btn-add').addEventListener('click', () => openAddPopup(-1));
+$('btn-add').addEventListener('click', () => window.openAddPopup(-1));
 
 // Close
 $('add-close').addEventListener('click',  closeAddPopup);
@@ -1393,7 +1393,7 @@ window.delWatchlist = async (idx) => {
 window.moveToTradePlan = (idx) => {
     const row = wList[idx];
     navigate('tradeplan');
-    openAddPopup(-1);
+    window.openAddPopup(-1);
     const live = stockPrices[row.stockCode] ? stockPrices[row.stockCode].price : row.lastPrice;
     $('ap-code').value = row.stockCode || '';
     $('ap-buy').value = live || '';
@@ -1659,7 +1659,7 @@ window.toggleCustomUI = (val) => {
                 // Instantly hide without animation to avoid glitch overlap
                 document.getElementById('row-action-modal').classList.add('hidden');
                 document.getElementById('row-action-modal').classList.remove('visible');
-                if (idx !== undefined) openAddPopup(parseInt(idx));
+                if (idx !== undefined) window.openAddPopup(parseInt(idx));
             });
         }
 
@@ -1953,7 +1953,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 });
 
-window.openAddPopup = openAddPopup;
 
 let currentDetailSymbol = '';
 let currentDetailPrice = 0;

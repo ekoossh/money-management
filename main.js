@@ -1678,35 +1678,31 @@ window.currentCustomPresetName = '';
 
 window.updatePresetSelect = () => {
     try {
-        let wrapper = $('scr-preset-wrapper');
-        
-        // Fallback if index.html is cached and still has the old <select>
-        if (!wrapper) {
-            const oldSel = $('scr-preset-select');
-            if (oldSel && oldSel.tagName === 'SELECT') {
-                wrapper = document.createElement('div');
-                wrapper.id = 'scr-preset-wrapper';
-                wrapper.style.flex = '1';
-                oldSel.parentNode.replaceChild(wrapper, oldSel);
-            }
-        }
-        
-        // If absolutely no wrapper and no old select, inject it forcibly before the Save button
-        if (!wrapper) {
-            const saveBtn = document.querySelector('button[onclick*="saveCustomPreset"]');
-            if (saveBtn && saveBtn.parentNode) {
-                wrapper = document.createElement('div');
-                wrapper.id = 'scr-preset-wrapper';
-                wrapper.style.flex = '1';
-                wrapper.style.minWidth = '150px';
-                saveBtn.parentNode.insertBefore(wrapper, saveBtn);
-            } else {
-                return;
-            }
-        }
-        
         const opts = [{val:'', label:'-- Pilih Preset Tersimpan --'}];
         const presets = window.screenerCustomPresets || {};
+        Object.keys(presets).forEach(k => opts.push({val:k, label:k}));
+        
+        let val = window.currentCustomPresetName || '';
+        if (val && !presets[val]) val = '';
+        
+        const selectHtml = renderCustomSelect('scr-preset-select', opts, val, 'add-input', 'flex:1; min-width:110px; font-size:13px; padding:0 4px;');
+        
+        // Brute force: Rebuild the entire button row
+        const saveBtn = document.querySelector('button[onclick*="saveCustomPreset"]');
+        if (saveBtn && saveBtn.parentNode) {
+            const parent = saveBtn.parentNode;
+            parent.innerHTML = `
+                <div id="scr-preset-wrapper" style="flex:1;">
+                    ${selectHtml}
+                </div>
+                <button class="btn btn-secondary" onclick="if(window.saveCustomPreset) window.saveCustomPreset()" style="padding:8px 12px; font-size:12px;">Save</button>
+                <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="padding:8px 12px; font-size:12px;">Save As</button>
+            `;
+        }
+    } catch(e) {
+        console.error('Error rendering preset select:', e);
+    }
+};
         Object.keys(presets).forEach(k => opts.push({val:k, label:k}));
         
         let val = window.currentCustomPresetName || '';

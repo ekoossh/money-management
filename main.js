@@ -1990,23 +1990,32 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
     
     setTimeout(() => {
         if ($('detail-chart').innerHTML === '' && typeof TradingView !== 'undefined') {
-            new TradingView.widget({
-              "autosize": true,
-              "symbol": "IDX:" + sym,
-              "interval": "D",
-              "timezone": "Asia/Jakarta",
-              "theme": "dark",
-              "style": "1",
+            new TradingView.MediumWidget({
+              "symbols": [ [sym, "IDX:" + sym + "|3M"] ],
+              "chartOnly": false,
+              "width": "100%",
+              "height": "100%",
               "locale": "id",
-              "enable_publishing": false,
-              "backgroundColor": "rgba(0,0,0,0)",
-              "hide_top_toolbar": true,
-              "hide_side_toolbar": true,
-              "hide_legend": true,
-              "hide_bottom_toolbar": false,
-              "allow_symbol_change": false,
-              "save_image": false,
-              "withdateranges": true,
+              "colorTheme": "dark",
+              "autosize": true,
+              "showVolume": false,
+              "hideDateRanges": false,
+              "hideMarketStatus": true,
+              "hideSymbolLogo": false,
+              "scalePosition": "right",
+              "scaleMode": "Normal",
+              "fontFamily": "Poppins, sans-serif",
+              "fontSize": "10",
+              "noTimeScale": false,
+              "valuesTracking": "1",
+              "changeMode": "price-and-percent",
+              "chartType": "candlesticks",
+              "upColor": "#26a69a",
+              "downColor": "#ef5350",
+              "borderUpColor": "#26a69a",
+              "borderDownColor": "#ef5350",
+              "wickUpColor": "#26a69a",
+              "wickDownColor": "#ef5350",
               "container_id": "detail-chart"
             });
         }

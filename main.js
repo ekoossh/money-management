@@ -1973,41 +1973,32 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
     }
     
     
-    const mc = document.querySelector('.movers-table thead');
-    if (mc) {
-        const rect = mc.getBoundingClientRect();
-        $('stock-detail-panel').style.top = rect.top + 'px';
-    }
-    
     $('stock-detail-panel').classList.add('active');
     
     $('detail-chart').innerHTML = '';
     
     setTimeout(() => {
         if ($('detail-chart').innerHTML === '' && typeof TradingView !== 'undefined') {
-            new TradingView.MediumWidget({
-              "symbols": [ [sym, "IDX:" + sym + "|1D"] ],
-              "chartOnly": false,
-              "width": "100%",
-              "height": "100%",
-              "locale": "id",
-              "colorTheme": "dark",
+            new TradingView.widget({
               "autosize": true,
-              "showVolume": false,
-              "hideDateRanges": false,
-              "hideMarketStatus": true,
-              "hideSymbolLogo": true,
-              "scalePosition": "none",
-              "scaleMode": "Normal",
-              "fontFamily": "Poppins, sans-serif",
-              "fontSize": "10",
-              "noTimeScale": false,
-              "valuesTracking": "1",
-              "changeMode": "price-and-percent",
-              "chartType": "area",
-              "lineColor": "#a3e635",
-              "bottomColor": "rgba(163, 230, 53, 0)",
-              "topColor": "rgba(163, 230, 53, 0.3)",
+              "symbol": "IDX:" + sym,
+              "interval": "D",
+              "timezone": "Asia/Jakarta",
+              "theme": "dark",
+              "style": "1", // 1 = Candlestick
+              "locale": "id",
+              "enable_publishing": false,
+              "backgroundColor": "#0c0c0e", 
+              "gridColor": "#1f1f25",
+              "hide_top_toolbar": true, 
+              "hide_legend": true,
+              "save_image": false,
+              "disabled_features": [
+                  "header_widget", 
+                  "left_toolbar", 
+                  "zoom", 
+                  "pan"
+              ],
               "container_id": "detail-chart"
             });
         }

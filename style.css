@@ -2667,7 +2667,7 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
 /* ==================== STOCK DETAIL PANEL ==================== */
 .detail-panel {
     position: fixed;
-    top: 154px; /* Approx below search and preset filters */
+    top: 136px;
     bottom: 0;
     right: 0;
     width: 85%;

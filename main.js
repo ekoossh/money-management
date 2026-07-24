@@ -1243,28 +1243,30 @@ window.addFilterRow = () => {
     row.id = `filter-row-${id}`;
     row.style = 'display:flex; flex-wrap:wrap; gap:4px; align-items:center; background:var(--bg-2); padding:8px; border-radius:8px;';
     
-    let fieldOpts = TV_FIELDS.map(f => `<option value="${f.val}">${f.label}</option>`).join('');
-    let opOpts = TV_OPS.map(f => `<option value="${f.val}">${f.label}</option>`).join('');
-    
+    const fHtml = renderCustomSelect(`fr-field-${id}`, TV_FIELDS, TV_FIELDS[0].val, 'add-input', 'flex:1; min-width:110px; font-size:12px; padding:0 6px;');
+    const oHtml = renderCustomSelect(`fr-op-${id}`, TV_OPS, TV_OPS[0].val, 'add-input', 'flex:1; min-width:80px; font-size:12px; padding:0 6px;');
+    const tHtml = renderCustomSelect(`fr-type-${id}`, [{val:'num',label:'123'},{val:'ind',label:'Ind'}], 'num', 'add-input', 'width:60px; font-size:12px; padding:0 6px; border-top-right-radius:0; border-bottom-right-radius:0;');
+    const viHtml = renderCustomSelect(`fr-val-ind-${id}`, TV_FIELDS, TV_FIELDS[0].val, 'add-input hidden', 'flex:1; font-size:12px; padding:0 6px; border-top-left-radius:0; border-bottom-left-radius:0;');
+
     row.innerHTML = `
-        <select class="add-input" id="fr-field-${id}" style="flex:1; min-width:120px; padding:4px 6px; font-size:12px;">${fieldOpts}</select>
-        <select class="add-input" id="fr-op-${id}" style="flex:1; min-width:110px; padding:4px 6px; font-size:12px;">${opOpts}</select>
+        ${fHtml}
+        ${oHtml}
         
         <div style="display:flex; flex:1; min-width:130px; gap:4px;">
-            <select class="add-input" id="fr-type-${id}" onchange="toggleFilterType(${id})" style="width:60px; padding:4px 6px; font-size:12px; border-top-right-radius:0; border-bottom-right-radius:0; -webkit-appearance: none; appearance: none; text-align:center;">
-                <option value="num">123</option>
-                <option value="ind">Ind</option>
-            </select>
-            
+            ${tHtml}
             <input type="number" id="fr-val-num-${id}" class="add-input" placeholder="0" style="flex:1; padding:4px 6px; font-size:12px; border-top-left-radius:0; border-bottom-left-radius:0;">
-            
-            <select class="add-input hidden" id="fr-val-ind-${id}" style="flex:1; padding:4px 6px; font-size:12px; border-top-left-radius:0; border-bottom-left-radius:0;">
-                ${fieldOpts}
-            </select>
+            ${viHtml}
         </div>
         
         <button class="btn btn-ghost" onclick="removeFilterRow(${id})" style="padding:4px 8px; color:var(--down); font-weight:bold;">✕</button>
     `;
+    
+    setTimeout(() => {
+        row.querySelectorAll('.custom-select-trigger').forEach(el => {
+            el.style.padding = '4px 8px';
+            el.style.height = '34px';
+        });
+    }, 10);
     container.appendChild(row);
 };
 
@@ -1275,8 +1277,21 @@ window.removeFilterRow = (id) => {
 
 window.toggleFilterType = (id) => {
     const type = document.getElementById(`fr-type-${id}`).value;
-    document.getElementById(`fr-val-num-${id}`).classList.toggle('hidden', type === 'ind');
-    document.getElementById(`fr-val-ind-${id}`).classList.toggle('hidden', type === 'num');
+    const num = document.getElementById(`fr-val-num-${id}`);
+    const ind = document.getElementById(`fr-val-ind-${id}`);
+    
+    if (num && ind) {
+        const indWrapper = ind.closest('.custom-select') || ind;
+        if (type === 'num') {
+            num.classList.remove('hidden');
+            indWrapper.classList.add('hidden');
+        } else {
+            num.classList.add('hidden');
+            indWrapper.classList.remove('hidden');
+            const trigger = indWrapper.querySelector('.custom-select-trigger');
+            if (trigger) { trigger.style.padding = '4px 8px'; trigger.style.height = '34px'; }
+        }
+    }
 };
 
 const renderWatchlist = () => {

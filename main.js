@@ -169,11 +169,12 @@ const calcRow = (hb, sl) => {
 const save = async () => {
     if (!cfg.telegramToken) cfg.telegramToken = localStorage.getItem('mm_tg_token') || '';
     if (!cfg.telegramChatId) cfg.telegramChatId = localStorage.getItem('mm_tg_chatid') || '';
+    cfg.screenerCustomPresets = window.screenerCustomPresets || {};
     toast('Menyimpan ' + list.length + ' baris...', 'info');
     try {
         const res = await fetch(API_URL, {
             method: 'POST',
-            body: JSON.stringify({cfg, list, pin: getPin()})
+            body: JSON.stringify({cfg, list, watchList: window.wList || [], pin: getPin()})
         });
         const out = await res.json();
         if(out.status === 'success') toast('Tersimpan ✓');
@@ -1183,10 +1184,24 @@ $('filter-bar').addEventListener('click', e => {
             cfg = Object.assign(cfg, data.cfg);
             if (data.cfg.telegramToken) localStorage.setItem('mm_tg_token', data.cfg.telegramToken);
             if (data.cfg.telegramChatId) localStorage.setItem('mm_tg_chatid', data.cfg.telegramChatId);
+            
+            if (data.cfg.screenerCustomPresets && Object.keys(data.cfg.screenerCustomPresets).length > 0) {
+                window.screenerCustomPresets = data.cfg.screenerCustomPresets;
+                localStorage.setItem('screenerCustomPresets', JSON.stringify(window.screenerCustomPresets));
+                if (window.updatePresetSelect) window.updatePresetSelect();
+            } else if (window.screenerCustomPresets && Object.keys(window.screenerCustomPresets).length > 0) {
+                // Initial migration: push local to cloud
+                cfg.screenerCustomPresets = window.screenerCustomPresets;
+                save();
+            }
         }
         if (!cfg.telegramToken) cfg.telegramToken = localStorage.getItem('mm_tg_token') || '';
         if (!cfg.telegramChatId) cfg.telegramChatId = localStorage.getItem('mm_tg_chatid') || '';
         if(data && data.list) list = data.list;
+        if(data && data.watchList) {
+            window.wList = data.watchList;
+            if (window.renderWatchlist) window.renderWatchlist();
+        }
         updDash();
         renderTable();
         syncPricesAndTriggers(false);
@@ -1742,6 +1757,7 @@ function savePresetWithName(name) {
     localStorage.setItem('screenerCustomPresets', JSON.stringify(window.screenerCustomPresets));
     window.currentCustomPresetName = name;
     window.updatePresetSelect();
+    if (typeof save === 'function') save();
     alert(`Preset "${name}" berhasil disimpan!`);
 }
 

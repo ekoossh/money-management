@@ -1,0 +1,14 @@
+gas-project/
+venv/
+scripts/
+templates/
+static/
+github-pages/
+__pycache__/
+*.py
+*.pyc
+*.bat
+*.zip
+*.md
+test_*.js
+puppeteer_*.js

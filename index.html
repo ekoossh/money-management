@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+<meta name="description" content="MM — Hitung risiko trading saham dengan tepat.">
+<meta name="theme-color" content="#0c0c0e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>StockDash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css?v=20260724_0420">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════ -->
+<aside class="sidebar collapsed" id="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-mark">S</div>
+        <div class="logo-text">
+            <span class="logo-title">StockDash</span>
+            <span class="logo-sub">Trading Analytics</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="#" class="nav-item" data-section="dashboard" id="nav-dashboard">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/></svg>
+            <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item active" data-section="tradeplan" id="nav-tradeplan">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+            <span>Trade Plan</span>
+        </a>
+        <a href="#" class="nav-item" data-section="settings" id="nav-settings">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+            <span>Settings</span>
+        </a>
+    </nav>
+
+
+</aside>
+
+<!-- Overlay mobile -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- ═══════════════════════════════════════
+     MAIN
+═══════════════════════════════════════ -->
+<main class="main expanded">
+    <!-- Topbar -->
+    <header class="topbar">
+        <button class="menu-btn" id="menu-btn">
+            <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+        </button>
+        <div class="topbar-title">
+            <h1 id="page-title">Dashboard</h1>
+            <p id="page-sub">Ringkasan trading kamu hari ini</p>
+        </div>
+        <div class="topbar-right">
+            <button class="menu-btn" id="refresh-btn" aria-label="Refresh">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
+            <div class="topbar-stats">
+                <div class="tb-stat">
+                    <span class="tb-lbl">Equity</span>
+                    <span class="tb-val" id="wl-dash-equity">Rp 0</span>
+                </div>
+                <div class="tb-stat">
+                    <span class="tb-lbl">Avg Risk/Posisi</span>
+                    <span class="tb-val" id="wl-dash-nominal-risk">Rp 0</span>
+                </div>
+                <div class="tb-stat">
+                    <span class="tb-lbl">Avg % Range</span>
+                    <span class="tb-val" id="wl-dash-avg-range">—</span>
+                </div>
+                <div class="tb-stat">
+                    <span class="tb-lbl">Aktif</span>
+                    <span class="tb-val" id="wl-dash-aktif">0/0</span>
+                </div>
+                <div class="tb-stat">
+                    <span class="tb-lbl">Avg ke TP</span>
+                    <span class="tb-val" id="wl-dash-avg-tp">—</span>
+                </div>
+                <div class="tb-stat">
+                    <span class="tb-lbl">Avg ke SL</span>
+                    <span class="tb-val" id="wl-dash-avg-sl">—</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content area -->
+    <div class="content">
+
+        <!-- ════ DASHBOARD ════ -->
+        <section class="section hidden" id="dashboard">
+
+            <!-- Big Stat Row -->
+            <div class="stat-grid">
+                <div class="stat-card stat-card--equity">
+                    <div class="stat-label">Total Equity</div>
+                    <div class="stat-value-row">
+                        <span class="stat-currency">Rp</span>
+                        <div class="stat-input" id="dash-equity" style="border: none;">0</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-label">Avg % Range</div>
+                    <div class="stat-value" id="dash-avg-range">—</div>
+                    <div class="stat-hint">Rata-rata jarak SL</div>
+                </div>
+
+                <div class="stat-card stat-card--risk">
+                    <div class="stat-label">Avg Risk / Posisi</div>
+                    <div class="stat-risk-value" id="dash-nominal-risk">Rp 0</div>
+                    <div class="stat-hint">Rata-rata risk terealisasi</div>
+                </div>
+
+                <div class="stat-card stat-card--slots">
+                    <div class="stat-label">Posisi Aktif</div>
+                    <div class="stat-slots">
+                        <span class="stat-slots-filled" id="dash-filled">0</span>
+                        <span class="stat-slots-sep">/</span>
+                        <span class="stat-slots-total" id="dash-total">0</span>
+                    </div>
+                    <div class="slots-bar">
+                        <div class="slots-bar-fill" id="slots-progress" style="width:0%"></div>
+                    </div>
+                    <div class="stat-hint">running / trade plan</div>
+                </div>
+            </div>
+
+            <!-- History Stats -->
+            <div class="stat-grid" style="margin-top: 16px;">
+                <div class="stat-card">
+                    <div class="stat-label">Avg Waktu ke TP</div>
+                    <div class="stat-value-row">
+                        <span class="stat-input" id="dash-avg-tp" style="border: none;">—</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Waktu ke SL</div>
+                    <div class="stat-value-row">
+                        <span class="stat-input" id="dash-avg-sl" style="border: none;">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fee Row -->
+            <div class="fee-row">
+                <div class="fee-item">
+                    <span class="fee-label">Fee Buy</span>
+                    <span class="fee-value"><span id="dash-fee-buy">0.15</span>%</span>
+                </div>
+                <div class="fee-divider"></div>
+                <div class="fee-item">
+                    <span class="fee-label">Fee Sell</span>
+                    <span class="fee-value"><span id="dash-fee-sell">0.25</span>%</span>
+                </div>
+                <div class="fee-divider"></div>
+                <div class="fee-item">
+                    <span class="fee-label">Total Saham</span>
+                    <span class="fee-value" id="dash-total-saham">0</span>
+                </div>
+                <div class="fee-divider"></div>
+                <div class="fee-item">
+                    <span class="fee-label">Slot Kosong</span>
+                    <span class="fee-value" id="dash-empty-slots">0</span>
+                </div>
+            </div>
+        </section>
+
+        
+        <!-- ════ SCREENER ════ -->
+        <section class="section hidden" id="screener">
+                        <div class="sticky-filter" style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; gap:8px; max-width:100%;">
+                <div class="filter-bar" id="screener-filter-bar" style="flex:1; margin-bottom:0; overflow-x:auto; padding-bottom:4px; flex-wrap:nowrap;">
+                    <div class="filter-chip active" onclick="if(window.setScreenerPreset) window.setScreenerPreset('custom', this)">Custom</div>
+                    <div class="filter-chip" onclick="if(window.setScreenerPreset) window.setScreenerPreset('gainers', this)">Gainers</div>
+                    <div class="filter-chip" onclick="if(window.setScreenerPreset) window.setScreenerPreset('losers', this)">Losers</div>
+                    <div class="filter-chip" onclick="if(window.setScreenerPreset) window.setScreenerPreset('value', this)">Value</div>
+                    <div class="filter-chip" onclick="if(window.setScreenerPreset) window.setScreenerPreset('volume', this)">Volume</div>
+                </div>
+            </div>
+            
+            <div id="screener-custom-ui" class="" style="margin-bottom: 12px; background: var(--bg-1); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center;">
+                        <select id="scr-preset-select" class="field-input" style="flex:1; padding:8px 12px; font-size:13px;" onchange="if(window.loadCustomPreset) window.loadCustomPreset()">
+                            <option value="">-- Pilih Preset Tersimpan --</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="if(window.saveCustomPreset) window.saveCustomPreset()" style="padding:8px 12px; font-size:12px;">Save</button>
+                        <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="padding:8px 12px; font-size:12px;">Save As</button>
+                    </div>
+
+                    <div style="margin-bottom:12px;">
+                        <input type="text" id="scr-code" class="add-input" placeholder="Ketik kode saham (Misal: BBCA) atau kosongkan..." style="width:100%; padding: 10px 14px; font-size: 13px; border-radius: 8px;">
+                    </div>
+                    
+                    <div style="font-size:11px; font-weight:600; color:var(--text-2); margin-bottom:8px;">Kriteria Filter:</div>
+                    <div id="filter-rows-container" style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+                        <!-- Filter rows will be inserted here dynamically -->
+                    </div>
+                    
+                    <button class="btn" id="btn-add-filter" style="width:100%; padding:10px; border:1px dashed var(--border-2); background:var(--bg-2); color:var(--text-2); margin-bottom:12px; font-size:13px; font-weight:500; border-radius:8px; display:flex; justify-content:center; align-items:center;">
+                        + Tambah Kriteria
+                    </button>
+                    <button class="btn btn-primary" id="btn-run-screener" style="width:100%; padding:12px; display:flex !important; justify-content:center !important; align-items:center !important; gap:8px;" onclick="if(window.runScreener) window.runScreener()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> <span style="font-weight:600; font-size:14px; padding-top:1px;">Run Screener</span>
+                    </button>
+                </div>
+            
+            <div class="movers-container">
+                <table class="wl-table movers-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; padding-left:16px;">Symbol</th>
+                            <th style="text-align:right;">Price</th>
+                            <th style="text-align:right; padding-right:16px;">Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="screener-tbody">
+                        <tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text-3);">Pilih preset dan klik Run</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ════ WATCHLIST (NEW) ════ -->
+        <section class="section hidden" id="watchlist">
+            <div class="table-wrap">
+                <table class="wl-table">
+                    <thead>
+                        <tr>
+                            <th class="th-code">Kode</th>
+                            <th>Live</th>
+                            <th>Hari Ini</th>
+                            <th>Tgl Masuk</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="watchlist-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ════ TRADE PLAN ════ -->
+        <section class="section" id="tradeplan">
+            <div class="wl-toolbar">
+                <div class="wl-count">
+                    <span id="wl-count-num">0</span> saham
+                </div>
+                <div class="wl-actions">
+                    <button class="btn btn-chip btn-chip-green" id="btn-add">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+        <span>Tambah</span>
+    </button>
+                    <button class="btn btn-chip btn-chip-red" id="btn-clear">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        <span>Clear</span>
+                    </button>
+                    <input type="file" id="import-file" accept=".xlsx" class="hidden">
+                    <button class="btn btn-chip " id="btn-import">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                        <span>Import</span>
+                    </button>
+                    <button class="btn btn-chip " id="btn-export">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        <span>Export</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar" id="filter-bar">
+                <span class="filter-label">Filter</span>
+                <button class="filter-chip filter-chip--all" data-filter="all" id="fc-all">All</button>
+                <button class="filter-chip filter-chip--order active" data-filter="order" id="fc-order">
+                    <span class="fc-dot"></span>Order Limit
+                    <span class="fc-count" id="fcc-order">0</span>
+                </button>
+                <button class="filter-chip filter-chip--running active" data-filter="running" id="fc-running">
+                    <span class="fc-dot"></span>Running
+                    <span class="fc-count" id="fcc-running">0</span>
+                </button>
+                <button class="filter-chip filter-chip--canceled" data-filter="canceled" id="fc-canceled">
+                    <span class="fc-dot"></span>Canceled
+                    <span class="fc-count" id="fcc-canceled">0</span>
+                </button>
+                <button class="filter-chip filter-chip--tp" data-filter="tp" id="fc-tp">
+                    <span class="fc-dot"></span>Hit TP
+                    <span class="fc-count" id="fcc-tp">0</span>
+                </button>
+                <button class="filter-chip filter-chip--sl" data-filter="sl" id="fc-sl">
+                    <span class="fc-dot"></span>Hit SL
+                    <span class="fc-count" id="fcc-sl">0</span>
+                </button>
+            </div>
+
+            <!-- Table -->
+            <div class="movers-container">
+                <table class="movers-table wl-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center; padding-left:20px; padding-right:4px; width:44px;">#</th>
+                            <th style="text-align:left;">Symbol<br><span style="color:var(--text-3); font-weight:normal; font-size:calc(12px - var(--fs-diff, 0px))">Status</span></th>
+                            <th style="text-align:right;">Buy Price<br><span style="color:var(--text-3); font-weight:normal; font-size:calc(12px - var(--fs-diff, 0px))">Last Price</span></th>
+                            <th style="text-align:right;">SL Price<br><span style="color:var(--text-3); font-weight:normal; font-size:calc(12px - var(--fs-diff, 0px))">Range %</span></th>
+                            <th style="text-align:right; padding-right:20px;">Lot<br><span style="color:var(--text-3); font-weight:normal; font-size:calc(12px - var(--fs-diff, 0px))">Nominal</span></th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="wl-body"></tbody>
+                </table>
+
+                <!-- Empty state -->
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <p class="empty-title">Belum ada saham</p>
+                    <p class="empty-sub">Tambah saham baru atau import dari Excel</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════ SETTINGS ════ -->
+        <section class="section hidden" id="settings">
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <div class="settings-card-head">
+                        <h2>Equity & Risiko</h2>
+                        <p>Dasar kalkulasi nominal risiko per posisi</p>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Total Equity (Rp)</label>
+                        <input type="text" id="set-equity" class="field-input" placeholder="50.000.000">
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Risk Per Trade (%)</label>
+                        <div class="field-with-unit">
+                            <input type="number" step="0.01" id="set-rpt" class="field-input">
+                            <span class="field-unit">%</span>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Risk:Reward Ratio</label>
+                        <div class="field-with-unit">
+                            <input type="number" step="0.1" id="set-rr" class="field-input" placeholder="2.0">
+                            <span class="field-unit">x</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-card-head">
+                        <h2>Konfigurasi Fee</h2>
+                        <p>Fee broker yang digunakan dalam kalkulasi lot</p>
+                    </div>
+                    <div class="field-row">
+                        <div class="field-group">
+                            <label class="field-label">Fee Buy (%)</label>
+                            <div class="field-with-unit">
+                                <input type="number" step="0.001" id="set-fee-buy" class="field-input">
+                                <span class="field-unit">%</span>
+                            </div>
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label">Fee Sell (%)</label>
+                            <div class="field-with-unit">
+                                <input type="number" step="0.001" id="set-fee-sell" class="field-input">
+                                <span class="field-unit">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="formula-box">
+                        <p class="formula-title">Formula</p>
+                        <code>BUY_fee = Harga BUY × (1 + fee%)</code>
+                        <code>SL_fee = Stop Loss × (1 − fee%)</code>
+                        <code>Lot = ⌊ (Nominal Risk / (BUY_fee − SL_fee)) / 100 ⌋</code>
+                    </div>
+                </div>
+            
+                <div class="settings-card">
+                    <div class="settings-card-head">
+                        <h2>Tampilan</h2>
+                        <p>Konfigurasi visual & ukuran font antarmuka</p>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Ukuran Font Tabel</label>
+                        <div class="font-size-pills" id="font-size-pills">
+                            <button type="button" class="font-pill active" data-size="besar">Besar (Default)</button>
+                            <button type="button" class="font-pill" data-size="sedang">Sedang</button>
+                            <button type="button" class="font-pill" data-size="kecil">Kecil</button>
+                        </div>
+                        <select id="set-font-size" class="field-input hidden">
+                            <option value="besar">Besar (Default)</option>
+                            <option value="sedang">Sedang</option>
+                            <option value="kecil">Kecil</option>
+                        </select>
+                    </div>
+                </div>
+            
+<div class="settings-card">
+                    <div class="settings-card-head">
+                        <h2>Notifikasi Telegram (24/7 Auto-Sync)</h2>
+                        <p>Terima notifikasi push instan di HP saat saham hit BUY, TP, atau SL</p>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Telegram Bot Token</label>
+                        <input type="text" id="set-tg-token" class="field-input" placeholder="Contoh: 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ" autocomplete="off">
+                    </div>
+                    <div class="field-group" style="margin-top: 12px;">
+                        <label class="field-label">Telegram Chat ID</label>
+                        <div class="field-row">
+                            <input type="text" id="set-tg-chatid" class="field-input" placeholder="Contoh: 987654321" autocomplete="off">
+                            <button type="button" class="btn btn-ghost" id="btn-test-tg" style="height: 44px; border-radius: var(--radius-md);">
+                                <span>Uji Notifikasi 📲</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+</div>
+
+            <div class="settings-actions">
+                <button class="btn btn-primary" id="btn-save-settings">Simpan Perubahan</button>
+                <button class="btn btn-ghost" id="btn-reset-pin">Ubah PIN Rahasia</button>
+                <button class="btn btn-ghost btn-danger" id="btn-reset-all">Reset Semua Data</button>
+            </div>
+        </section>
+
+    </div><!-- /content -->
+</main>
+
+<!-- ═══════════════════════════════════════
+     TOAST
+═══════════════════════════════════════ -->
+<div class="toast" id="toast">
+    <div class="toast-icon" id="toast-icon"></div>
+    <span id="toast-msg"></span>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL — Confirm
+═══════════════════════════════════════ -->
+<div class="modal-backdrop hidden" id="modal-backdrop">
+    <div class="modal">
+        <h3 class="modal-title" id="modal-title">Konfirmasi</h3>
+        <p class="modal-body" id="modal-body">Yakin?</p>
+        <div class="modal-actions">
+            <button class="btn btn-ghost" id="modal-cancel">Batal</button>
+            <button class="btn btn-danger-solid" id="modal-confirm">Hapus</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     POPUP — Tambah Saham (Glassmorphism)
+═══════════════════════════════════════ -->
+<div class="add-backdrop hidden" id="add-backdrop">
+    <div class="add-popup" id="add-popup">
+
+        <!-- Header -->
+        <div class="add-popup-header">
+            <div>
+                <h2 class="add-popup-title">Tambah Saham</h2>
+                <p class="add-popup-sub">Masukkan data posisi baru</p>
+            </div>
+            <button class="add-popup-close" id="add-close">
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </button>
+        </div>
+
+        <!-- Form -->
+        <div class="add-popup-form">
+            <div class="add-field">
+                <label class="add-label">Kode Saham</label>
+                <input type="text" id="ap-code" class="add-input add-input-code"
+                    placeholder="BBCA" maxlength="10" autocomplete="off" spellcheck="false">
+            </div>
+            <div class="add-field-row">
+                <div class="add-field">
+                    <label class="add-label">Harga BUY</label>
+                    <div class="add-input-wrap">
+                        <input type="number" id="ap-buy" class="add-input" placeholder="9.000">
+                        <span class="add-input-suffix">Rp</span>
+                    </div>
+                </div>
+                <div class="add-field">
+                    <label class="add-label">Stop Loss</label>
+                    <div class="add-input-wrap">
+                        <input type="number" id="ap-sl" class="add-input" placeholder="8.500">
+                        <span class="add-input-suffix">Rp</span>
+                    </div>
+                </div>
+            </div>
+            <div class="add-field">
+                <label class="add-label">Status</label>
+                <div class="status-pill-group" id="ap-status-group">
+                    <button type="button" class="status-pill status-pill--order active" data-val="order">Order Limit</button>
+                    <button type="button" class="status-pill status-pill--running" data-val="running">Running</button>
+                    <button type="button" class="status-pill status-pill--canceled" data-val="canceled">Canceled</button>
+                    <button type="button" class="status-pill status-pill--tp" data-val="tp">Hit TP</button>
+                    <button type="button" class="status-pill status-pill--sl" data-val="sl">Hit SL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Preview Card -->
+        <div class="add-preview" id="add-preview">
+            <div class="add-preview-label">Preview Kalkulasi</div>
+            <div class="add-preview-grid">
+                <div class="add-pv-item">
+                    <span class="add-pv-key">% Range</span>
+                    <span class="add-pv-val" id="pv-range">—</span>
+                </div>
+                <div class="add-pv-item">
+                    <span class="add-pv-key">Lot Buy</span>
+                    <span class="add-pv-val" id="pv-lot">—</span>
+                </div>
+                <div class="add-pv-item add-pv-item--wide">
+                    <span class="add-pv-key">Nominal Buy</span>
+                    <span class="add-pv-val add-pv-val--accent" id="pv-nom">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="add-popup-actions">
+            <button class="btn btn-ghost" id="add-cancel">Batal</button>
+            <button class="btn btn-primary" id="add-save">
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+                Tambah ke Trade Plan
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- ═══════════════════════════════════════
+     BOTTOM NAV (MOBILE ONLY)
+═══════════════════════════════════════ -->
+<nav class="bottom-nav">
+    <a href="#" class="nav-item" data-section="dashboard">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/></svg>
+        <span>Dashboard</span>
+    </a>
+    <a href="#" class="nav-item" data-section="screener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <span>Screener</span>
+    </a>
+    <a href="#" class="nav-item" data-section="watchlist">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        <span>Watchlist</span>
+    </a>
+    <a href="#" class="nav-item active" data-section="tradeplan">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/></svg>
+        <span>Trade Plan</span>
+    </a>
+    <a href="#" class="nav-item" data-section="settings">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/></svg>
+        <span>Settings</span>
+    </a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<script src="main.js?v=20260724_0420"></script>
+
+    <!-- Row Action Modal (Bottom Sheet) -->
+    <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+                <h3 id="ra-title">Riwayat Status</h3>
+                <div class="action-group">
+                    <button class="icon-btn edit-btn" id="ra-edit" title="Edit" style="background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2);">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    </button>
+                    <button class="icon-btn del-btn" id="ra-del" title="Hapus" style="background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2);">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sheet-content" id="ra-content"></div>
+        </div>
+    </div>
+
+</body>
+</html>

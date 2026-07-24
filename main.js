@@ -1988,38 +1988,120 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
     
     $('detail-chart').innerHTML = '';
 
-    // Update period label in dp-change
+    // ── Custom chart: Yahoo Finance OHLCV → Lightweight Charts ──
+    const periodLabels = {
+        '5D':'5 Hari Terakhir','1M':'1 Bulan Terakhir','3M':'3 Bulan Terakhir',
+        'YTD':'Tahun Ini (YTD)','1Y':'1 Tahun Terakhir','5Y':'5 Tahun Terakhir'
+    };
+
+    // Map our range labels to Yahoo Finance range params
+    const rangeMap = {
+        '5D':'5d','1M':'1mo','3M':'3mo','YTD':'ytd','1Y':'1y','5Y':'5y'
+    };
+
+    let _lwChart = null;
+
+    const buildChart = async (symbol, range, interval) => {
+        const container = $('detail-chart');
+        container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:12px;">Memuat chart...</div>';
+
+        try {
+            const ticker = symbol + '.JK';
+            const yRange = rangeMap[range] || '3mo';
+            const yInterval = interval || '1d';
+            const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=${yInterval}&range=${yRange}`;
+
+            const res = await fetch(url);
+            const json = await res.json();
+            const result = json?.chart?.result?.[0];
+            if (!result) throw new Error('No data');
+
+            const timestamps = result.timestamp;
+            const q = result.indicators.quote[0];
+            const candles = timestamps.map((t, i) => ({
+                time: t,
+                open:  parseFloat(q.open[i]?.toFixed(0)),
+                high:  parseFloat(q.high[i]?.toFixed(0)),
+                low:   parseFloat(q.low[i]?.toFixed(0)),
+                close: parseFloat(q.close[i]?.toFixed(0))
+            })).filter(c => c.open && c.high && c.low && c.close);
+
+            container.innerHTML = '';
+
+            if (_lwChart) { try { _lwChart.remove(); } catch(e){} _lwChart = null; }
+
+            _lwChart = LightweightCharts.createChart(container, {
+                width:  container.clientWidth,
+                height: container.clientHeight || 240,
+                layout: {
+                    background: { type: 'solid', color: '#0c0c0e' },
+                    textColor: '#9ca3af',
+                    fontFamily: 'Poppins, sans-serif',
+                    fontSize: 11
+                },
+                grid: {
+                    vertLines: { color: '#1f1f25' },
+                    horzLines: { color: '#1f1f25' }
+                },
+                crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+                rightPriceScale: {
+                    borderColor: '#2d2d35',
+                    scaleMargins: { top: 0.1, bottom: 0.15 }
+                },
+                timeScale: {
+                    borderColor: '#2d2d35',
+                    timeVisible: range === '5D',
+                    secondsVisible: false
+                },
+                handleScroll: false,
+                handleScale: false
+            });
+
+            const series = _lwChart.addCandlestickSeries({
+                upColor:         '#26a69a',
+                downColor:       '#ef5350',
+                borderUpColor:   '#26a69a',
+                borderDownColor: '#ef5350',
+                wickUpColor:     '#26a69a',
+                wickDownColor:   '#ef5350'
+            });
+            series.setData(candles);
+            _lwChart.timeScale().fitContent();
+
+            // Resize observer
+            new ResizeObserver(() => {
+                if (_lwChart) {
+                    _lwChart.applyOptions({ width: container.clientWidth, height: container.clientHeight || 240 });
+                }
+            }).observe(container);
+
+        } catch(e) {
+            $('detail-chart').innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:12px;text-align:center;padding:16px;">Gagal memuat data chart.<br><small>${e.message}</small></div>`;
+        }
+    };
+
+    // Attach period button handlers
+    document.querySelectorAll('.dp-period').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.dp-period').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const range = btn.dataset.range;
+            const interval = btn.dataset.interval;
+            const lbl2 = $('dp-change').querySelector('.dp-period-label');
+            if (lbl2) lbl2.textContent = periodLabels[range] || range;
+            buildChart(currentDetailSymbol, range, interval);
+        };
+    });
+
+    // Reset to 3M active and load
+    document.querySelectorAll('.dp-period').forEach(b => b.classList.remove('active'));
+    const btn3M = document.querySelector('.dp-period[data-range="3M"]');
+    if (btn3M) btn3M.classList.add('active');
+
     const lbl = $('dp-change').querySelector('.dp-period-label');
     if (lbl) lbl.textContent = '3 Bulan Terakhir';
 
-    setTimeout(() => {
-        if (typeof TradingView === 'undefined') return;
-        new TradingView.MediumWidget({
-            "symbols": [ [sym, "IDX:" + sym + "|3M"] ],
-            "chartOnly": true,
-            "width": "100%",
-            "height": "100%",
-            "locale": "id",
-            "colorTheme": "dark",
-            "autosize": true,
-            "showVolume": false,
-            "hideDateRanges": false,
-            "hideMarketStatus": true,
-            "hideSymbolLogo": true,
-            "scalePosition": "right",
-            "scaleMode": "Normal",
-            "noTimeScale": false,
-            "valuesTracking": "0",
-            "chartType": "candlesticks",
-            "upColor": "#26a69a",
-            "downColor": "#ef5350",
-            "borderUpColor": "#26a69a",
-            "borderDownColor": "#ef5350",
-            "wickUpColor": "#26a69a",
-            "wickDownColor": "#ef5350",
-            "container_id": "detail-chart"
-        });
-    }, 350);
+    buildChart(sym, '3M', '1d');
 };
 
 window.closeStockDetail = () => {

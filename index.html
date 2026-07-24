@@ -611,9 +611,10 @@
 
 
 
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<!-- Lightweight Charts (open-source, by TradingView) -->
+<script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
-<script src="main.js?v=20260725_0130"></script>
+<script src="main.js?v=20260725_0135"></script>
 
     <!-- Row Action Modal (Bottom Sheet) -->
     <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">
@@ -663,6 +664,16 @@
     <!-- Row 3: chart -->
     <div class="dp-body" style="padding:0;">
         <div id="detail-chart" style="flex:1; width:100%; height:100%; overflow:hidden;"></div>
+    </div>
+
+    <!-- Row 4: period buttons -->
+    <div class="dp-periods" id="dp-periods">
+        <button class="dp-period" data-range="5D" data-interval="1d">1W</button>
+        <button class="dp-period" data-range="1M" data-interval="1d">1M</button>
+        <button class="dp-period active" data-range="3M" data-interval="1d">3M</button>
+        <button class="dp-period" data-range="YTD" data-interval="1d">YTD</button>
+        <button class="dp-period" data-range="1Y" data-interval="1d">1Y</button>
+        <button class="dp-period" data-range="5Y" data-interval="1wk">5Y</button>
     </div>
 
     <!-- Row 5: action buttons -->

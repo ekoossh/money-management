@@ -1264,8 +1264,8 @@ window.addFilterRow = () => {
     
     const fHtml = renderCustomSelect(`fr-field-${id}`, TV_FIELDS, TV_FIELDS[0].val, 'add-input', 'flex:1; min-width:110px; font-size:12px; padding:0 6px;');
     const oHtml = renderCustomSelect(`fr-op-${id}`, TV_OPS, TV_OPS[0].val, 'add-input', 'flex:1; min-width:80px; font-size:12px; padding:0 6px;');
-    const tHtml = renderCustomSelect(`fr-type-${id}`, [{val:'num',label:'123'},{val:'ind',label:'Ind'}], 'num', 'add-input', 'width:60px; font-size:12px; padding:0 6px; border-top-right-radius:0; border-bottom-right-radius:0;');
-    const viHtml = renderCustomSelect(`fr-val-ind-${id}`, TV_FIELDS, TV_FIELDS[0].val, 'add-input hidden', 'flex:1; font-size:12px; padding:0 6px; border-top-left-radius:0; border-bottom-left-radius:0;');
+    const tHtml = renderCustomSelect(`fr-type-${id}`, [{val:'num',label:'Val'},{val:'ind',label:'Ind'}], 'num', 'add-input', 'width:75px; font-size:12px; padding:0 6px; border-top-right-radius:0; border-bottom-right-radius:0;');
+    const viHtml = renderCustomSelect(`fr-val-ind-${id}`, TV_FIELDS, TV_FIELDS[0].val, 'add-input', 'display:none; flex:1; font-size:12px; padding:0 6px; border-top-left-radius:0; border-bottom-left-radius:0;');
 
     row.innerHTML = `
         ${fHtml}
@@ -1303,12 +1303,16 @@ window.toggleFilterType = (id) => {
         const indWrapper = ind.closest('.custom-select') || ind;
         if (type === 'num') {
             num.classList.remove('hidden');
-            indWrapper.classList.add('hidden');
+            indWrapper.style.display = 'none';
         } else {
             num.classList.add('hidden');
-            indWrapper.classList.remove('hidden');
+            indWrapper.style.display = 'block';
             const trigger = indWrapper.querySelector('.custom-select-trigger');
-            if (trigger) { trigger.style.padding = '4px 8px'; trigger.style.height = '34px'; }
+            if (trigger) { 
+                trigger.classList.remove('hidden');
+                trigger.style.padding = '4px 8px'; 
+                trigger.style.height = '34px'; 
+            }
         }
     }
 };

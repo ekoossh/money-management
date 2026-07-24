@@ -1281,6 +1281,16 @@ window.moveToTradePlan = (idx) => {
 };
 
 const runScreener = () => {
+    // If running custom, close modal and set active chip
+    const sbd = document.getElementById('screener-custom-backdrop');
+    if(sbd && !sbd.classList.contains('hidden')) {
+        window.currentScreenerPreset = 'custom';
+        const chips = document.querySelectorAll('#screener-filter-bar .filter-chip');
+        chips.forEach(c => c.classList.remove('active'));
+        chips[0].classList.add('active'); // custom is the first chip
+        closeScreenerModal();
+    }
+    
     const tb = $('screener-tbody');
     const preset = window.currentScreenerPreset || 'custom';
     tb.innerHTML = `<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text-3);">Memproses data...</td></tr>`;
@@ -1541,26 +1551,45 @@ document.addEventListener('touchend', e => {
 
 window.currentScreenerPreset = 'custom';
 window.setScreenerPreset = (val, el) => {
-    window.currentScreenerPreset = val;
     const chips = document.querySelectorAll('#screener-filter-bar .filter-chip');
-    chips.forEach(c => c.classList.remove('active'));
-    if (el) el.classList.add('active');
-    const ui = document.getElementById('screener-custom-ui');
     
     if (val === 'custom') {
-        if (window.currentScreenerPreset === 'custom' && ui) {
-            ui.classList.toggle('hidden'); // toggle visibility if clicking again
-        } else if (ui) {
-            ui.classList.remove('hidden'); // explicitly show if switching to custom
+        // Just open the modal, don't change active chip yet until they click run
+        const bd = document.getElementById('screener-custom-backdrop');
+        const pu = document.getElementById('screener-custom-popup');
+        if(bd && pu) {
+            bd.classList.remove('hidden');
+            setTimeout(() => { pu.classList.add('visible'); }, 10);
         }
-    } else if (ui) {
-        ui.classList.add('hidden'); // hide for non-custom presets
-    }
-    
-    if (val !== 'custom') {
+    } else {
+        window.currentScreenerPreset = val;
+        chips.forEach(c => c.classList.remove('active'));
+        if (el) el.classList.add('active');
         if (window.runScreener) window.runScreener();
     }
 };
+
+// Screener modal close handlers
+const closeScreenerModal = () => {
+    const bd = document.getElementById('screener-custom-backdrop');
+    const pu = document.getElementById('screener-custom-popup');
+    if(bd && pu) {
+        pu.classList.remove('visible');
+        setTimeout(() => bd.classList.add('hidden'), 300);
+    }
+};
+
+const sbd = document.getElementById('screener-custom-backdrop');
+if(sbd) {
+    sbd.addEventListener('click', e => {
+        if (e.target === sbd) closeScreenerModal();
+    });
+}
+const sClose = document.getElementById('screener-custom-close');
+if(sClose) {
+    sClose.addEventListener('click', closeScreenerModal);
+}
+
 // Screener Custom Presets Logic
 window.screenerCustomPresets = JSON.parse(localStorage.getItem('screenerCustomPresets') || '{}');
 window.currentCustomPresetName = '';

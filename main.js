@@ -2072,6 +2072,10 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct, openPx, highPx, lowP
 
             if (_lwChart) { try { _lwChart.remove(); } catch(e){} _lwChart = null; }
 
+            const fsDiffStr = getComputedStyle(document.body).getPropertyValue('--fs-diff') || '0px';
+            const fsDiffVal = parseFloat(fsDiffStr) || 0;
+            const chartFontSize = Math.max(9, Math.round(11 - fsDiffVal));
+
             _lwChart = LightweightCharts.createChart(container, {
                 width:  container.clientWidth,
                 height: container.clientHeight || 240,
@@ -2079,7 +2083,7 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct, openPx, highPx, lowP
                     background: { type: 'solid', color: '#0c0c0e' },
                     textColor: '#6b7280',
                     fontFamily: 'Poppins, sans-serif',
-                    fontSize: 10
+                    fontSize: chartFontSize
                 },
                 grid: {
                     vertLines: { visible: false },

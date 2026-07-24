@@ -2679,7 +2679,7 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
     flex-direction: column;
     overflow: hidden;
     box-shadow: none; /* Shadow removed */
-    border-left: 1px solid var(--border-1);
+    border-left: 2px solid var(--border-2); /* Clear left border line divider */
     border-top-left-radius: 12px;
 }
 .detail-panel.active {
@@ -2695,7 +2695,7 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
     flex-shrink: 0;
 }
 .dp-title {
-    font-size: 16px;
+    font-size: calc(16px - var(--fs-diff, 0px));
     font-weight: 700;
     margin-left: 8px;
     color: var(--text-1);
@@ -2731,7 +2731,7 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
     border-bottom: 1px solid var(--border-1);
 }
 .dp-company {
-    font-size: 12px;
+    font-size: calc(12px - var(--fs-diff, 0px));
     color: var(--text-3);
     margin-bottom: 2px;
     white-space: nowrap;
@@ -2739,14 +2739,14 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
     text-overflow: ellipsis;
 }
 .dp-price-big {
-    font-size: 24px;
+    font-size: calc(24px - var(--fs-diff, 0px));
     font-weight: 700;
     line-height: 1.1;
     color: var(--text-1);
     letter-spacing: -0.3px;
 }
 .dp-change-row {
-    font-size: 13px;
+    font-size: calc(13px - var(--fs-diff, 0px));
     font-weight: 500;
     margin-top: 2px;
     display: flex;
@@ -2774,7 +2774,7 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
     background: none;
     border: none;
     color: var(--text-3);
-    font-size: 12px;
+    font-size: calc(12px - var(--fs-diff, 0px));
     font-weight: 600;
     padding: 5px 6px;
     cursor: pointer;

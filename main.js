@@ -1944,15 +1944,6 @@ window.loadCustomPreset = (name) => {
 };
 
 
-}); // Close the main DOMContentLoaded block
-
-// Initialize preset select on load
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        if (window.renderTemplates) window.renderTemplates();
-    }, 500);
-});
-
 
 let currentDetailSymbol = '';
 let currentDetailPrice = 0;
@@ -2027,3 +2018,13 @@ if ($('dp-btn-add-plan')) {
         window.closeStockDetail(); // Close detail panel when opening add popup
     };
 }
+
+}); // Close the main DOMContentLoaded block
+
+// Initialize preset select on load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        if (window.renderTemplates) window.renderTemplates();
+    }, 500);
+});
+

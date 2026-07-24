@@ -1719,7 +1719,10 @@ window.updatePresetSelect = () => {
         wrapper.style.minHeight = '30px';
         wrapper.style.flex = '1';
         
-        wrapper.innerHTML = renderCustomSelect('scr-preset-select', opts, val, 'field-input', 'flex:1; min-height:30px;');
+        wrapper.innerHTML = renderCustomSelect('scr-preset-select', opts, val, 'field-input', 'flex:1; min-height:30px; border:2px solid red;');
+        
+        // Visual indicator that it ran
+        if (typeof toast === 'function') toast('Preset Select Diperbarui!');
         
     } catch(e) {
         console.error('Error rendering preset select:', e);

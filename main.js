@@ -16,7 +16,7 @@ const renderCustomSelect = (id, options, selectedVal, className = 'add-input', s
     return `
         <div class="custom-select" style="${styles}">
             <input type="hidden" id="${id}" value="${selectedVal}">
-            <div class="custom-select-trigger ${className}" style="display:flex; justify-content:space-between; align-items:center; width:100%; height:100%; font-size:inherit;">
+            <div class="custom-select-trigger ${className}" style="display:flex; justify-content:space-between; align-items:center; width:100%; font-size:inherit;">
                 <span class="custom-select-text" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:inline-block; max-width:85%; font-size:inherit;">${selectedLabel}</span>
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--text-3)" stroke-width="2" fill="none" style="flex-shrink:0; margin-left:4px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
             </div>
@@ -1634,6 +1634,8 @@ window.setScreenerPreset = (val, el) => {
     const chips = document.querySelectorAll('#screener-filter-bar .filter-chip');
     
     if (val === 'custom') {
+        if (window.updatePresetSelect) window.updatePresetSelect();
+        
         // Just open the modal, don't change active chip yet until they click run
         const bd = document.getElementById('screener-custom-backdrop');
         const pu = document.getElementById('screener-custom-popup');

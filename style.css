@@ -1812,19 +1812,31 @@ body.font-kecil {
 }
 
 #screener .sticky-filter {
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: 0;
+    padding-right: 0;
     margin-bottom: 0 !important;
     border-bottom: 1px solid var(--border-1);
     position: static !important; /* No longer sticky since parent doesn't scroll */
     flex-shrink: 0; /* Don't shrink the filter bar */
     z-index: 60 !important;
 }
+#screener .sticky-filter .filter-bar .filter-chip:first-child {
+    margin-left: 32px;
+}
+#screener .sticky-filter .filter-bar .filter-chip:last-child {
+    margin-right: 32px;
+}
 
 @media (max-width: 640px) {
     #screener .sticky-filter {
-        padding-left: 16px;
-        padding-right: 16px;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    #screener .sticky-filter .filter-bar .filter-chip:first-child {
+        margin-left: 16px;
+    }
+    #screener .sticky-filter .filter-bar .filter-chip:last-child {
+        margin-right: 16px;
     }
 }
 

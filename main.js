@@ -1646,17 +1646,13 @@ const closeScreenerModal = () => {
 
 const sbd = document.getElementById('screener-custom-backdrop');
 if(sbd) {
-    sbd.addEventListener('mousedown', e => {
+    sbd.addEventListener('click', e => {
         if (e.target === sbd) closeScreenerModal();
     });
-    sbd.addEventListener('touchstart', e => {
-        if (e.target === sbd) closeScreenerModal();
-    }, {passive: true});
 }
 const sClose = document.getElementById('screener-custom-close');
 if(sClose) {
-    sClose.addEventListener('mousedown', closeScreenerModal);
-    sClose.addEventListener('touchstart', closeScreenerModal, {passive: true});
+    sClose.addEventListener('click', closeScreenerModal);
 }
 
 // Screener Custom Presets Logic
@@ -1664,16 +1660,16 @@ window.screenerCustomPresets = JSON.parse(localStorage.getItem('screenerCustomPr
 window.currentCustomPresetName = '';
 
 window.updatePresetSelect = () => {
-    const sel = $('scr-preset-select');
-    if (!sel) return;
-    sel.innerHTML = '<option value="">-- Pilih Preset Tersimpan --</option>';
-    for (let name in window.screenerCustomPresets) {
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        sel.appendChild(opt);
-    }
-    sel.value = window.currentCustomPresetName;
+    const wrapper = $('scr-preset-wrapper');
+    if (!wrapper) return;
+    
+    const opts = [{val:'', label:'-- Pilih Preset Tersimpan --'}];
+    Object.keys(window.screenerCustomPresets).forEach(k => opts.push({val:k, label:k}));
+    
+    let val = window.currentCustomPresetName || '';
+    if (val && !window.screenerCustomPresets[val]) val = '';
+    
+    wrapper.innerHTML = renderCustomSelect('scr-preset-select', opts, val, 'field-input', 'flex:1;');
 };
 
 window.saveAsCustomPreset = () => {

@@ -1402,6 +1402,98 @@ window.moveToTradePlan = (idx) => {
     save(); renderWatchlist();
 };
 
+
+window.currentScreenerData = [];
+window.screenerSortField = '';
+window.screenerSortOrder = 'desc';
+
+window.sortScreenerData = (field) => {
+    if (!window.currentScreenerData || !window.currentScreenerData.length) return;
+    if (window.screenerSortField === field) {
+        window.screenerSortOrder = window.screenerSortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+        window.screenerSortField = field;
+        window.screenerSortOrder = 'desc';
+    }
+    
+    window.currentScreenerData.sort((a, b) => {
+        let valA, valB;
+        if (field === 'symbol') { valA = a.d[0]; valB = b.d[0]; }
+        else if (field === 'price') { valA = a.d[4]; valB = b.d[4]; } // change %
+        else if (field === 'value') { valA = a.d[5]; valB = b.d[5]; } // value
+        
+        if (valA < valB) return window.screenerSortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return window.screenerSortOrder === 'asc' ? 1 : -1;
+        return 0;
+    });
+    
+    document.getElementById('sort-icon-symbol').textContent = field === 'symbol' ? (window.screenerSortOrder === 'asc' ? '▲' : '▼') : '';
+    document.getElementById('sort-icon-price').textContent = field === 'price' ? (window.screenerSortOrder === 'asc' ? '▲' : '▼') : '';
+    document.getElementById('sort-icon-value').textContent = field === 'value' ? (window.screenerSortOrder === 'asc' ? '▲' : '▼') : '';
+    
+    if (window.renderScreenerTable) window.renderScreenerTable();
+};
+
+window.renderScreenerTable = () => {
+    const tb = document.getElementById('screener-tbody');
+    if (!tb) return;
+    tb.innerHTML = '';
+    const formatNumber = (num) => {
+        if (num >= 1e12) return (num/1e12).toFixed(2) + ' T';
+        if (num >= 1e9) return (num/1e9).toFixed(2) + ' B';
+        if (num >= 1e6) return (num/1e6).toFixed(2) + ' M';
+        return (num/1000).toFixed(2) + ' K';
+    };
+    const getLogoColor = (char) => {
+        const colors = ['#E53935','#D81B60','#8E24AA','#5E35B1','#3949AB','#1E88E5','#039BE5','#00ACC1','#00897B','#43A047','#F4511E','#6D4C41','#e67e22','#e74c3c','#34495e'];
+        const idx = (char.charCodeAt(0) || 65) % colors.length;
+        return colors[idx];
+    };
+
+    window.currentScreenerData.forEach(item => {
+        const sym = item.d[0];
+        const desc = item.d[1] || sym;
+        const price = item.d[2] || 0;
+        const chgAbs = item.d[3] || 0;
+        const chgPct = item.d[4] || 0;
+        const valueTraded = item.d[5] || 0;
+        const volume = item.d[6] || 0;
+        
+        const isUp = chgAbs > 0;
+        const isDown = chgAbs < 0;
+        const clr = isUp ? 'var(--up)' : (isDown ? 'var(--down)' : 'var(--text-1)');
+        const sChg = isUp ? '+' : '';
+        
+        const valStr = formatNumber(valueTraded);
+        const volStr = formatNumber(volume);
+        const logoColor = getLogoColor(sym.charAt(0));
+
+        const tr = document.createElement('tr');
+        tr.onclick = () => { if(window.addToWatchlist) window.addToWatchlist(sym, price); };
+        tr.style.cursor = 'pointer';
+        tr.innerHTML = `
+            <td>
+                <div class="m-sym-wrap" style="text-align:left;">
+                    <div class="m-logo" style="background:${logoColor}">${sym.charAt(0)}</div>
+                    <div style="text-align:left;">
+                        <div class="m-sym">${sym}</div>
+                        <div class="m-desc">${desc.substring(0,25)}</div>
+                    </div>
+                </div>
+            </td>
+            <td style="text-align:right;">
+                <div class="m-price">${price.toLocaleString('id-ID')}</div>
+                <div class="m-chg" style="color:${clr};">${sChg}${chgAbs}(${sChg}${chgPct.toFixed(2)}%)</div>
+            </td>
+            <td style="text-align:right; padding-right:16px;">
+                <div class="m-price">${valStr}</div>
+                <div class="m-chg">Vol: ${volStr}</div>
+            </td>
+        `;
+        tb.appendChild(tr);
+    });
+};
+
 const runScreener = () => {
     // If running custom, close modal and set active chip
     const sbd = document.getElementById('screener-custom-backdrop');
@@ -1419,7 +1511,7 @@ const runScreener = () => {
     
     // TradingView payload
     let filter = [{"left":"close","operation":"nempty"}];
-    let sort = {"sortBy":"volume","sortOrder":"desc"};
+    let sort = {"sortBy":"change","sortOrder":"desc"};
     let symbols = {"query":{"types":[]},"tickers":[]};
     
     if (preset === 'gainers') {
@@ -1488,62 +1580,13 @@ const runScreener = () => {
                 tb.innerHTML = `<tr><td colspan="3" style="text-align:center;padding:20px;">Tidak ada hasil</td></tr>`;
                 return;
             }
-            tb.innerHTML = '';
-            const formatNumber = (num) => {
-                if (num >= 1e12) return (num/1e12).toFixed(2) + ' T';
-                if (num >= 1e9) return (num/1e9).toFixed(2) + ' B';
-                if (num >= 1e6) return (num/1e6).toFixed(2) + ' M';
-                return (num/1000).toFixed(2) + ' K';
-            };
-            const getLogoColor = (char) => {
-                const colors = ['#E53935','#D81B60','#8E24AA','#5E35B1','#3949AB','#1E88E5','#039BE5','#00ACC1','#00897B','#43A047','#F4511E','#6D4C41','#e67e22','#e74c3c','#34495e'];
-                const idx = (char.charCodeAt(0) || 65) % colors.length;
-                return colors[idx];
-            };
-
-            res.data.forEach(item => {
-                const sym = item.d[0];
-                const desc = item.d[1] || sym;
-                const price = item.d[2] || 0;
-                const chgAbs = item.d[3] || 0;
-                const chgPct = item.d[4] || 0;
-                const valueTraded = item.d[5] || 0; // Rp
-                const volume = item.d[6] || 0; // shares
-                
-                const isUp = chgAbs > 0;
-                const isDown = chgAbs < 0;
-                const clr = isUp ? 'var(--up)' : (isDown ? 'var(--down)' : 'var(--text-1)');
-                const sChg = isUp ? '+' : '';
-                
-                // Format Value in Billion (B) or Million (M)
-                const valStr = formatNumber(valueTraded);
-                const volStr = formatNumber(volume);
-                const logoColor = getLogoColor(sym.charAt(0));
-
-                const tr = document.createElement('tr');
-                tr.onclick = () => { if(window.addToWatchlist) window.addToWatchlist(sym, price); };
-                tr.style.cursor = 'pointer';
-                tr.innerHTML = `
-                    <td>
-                        <div class="m-sym-wrap" style="text-align:left;">
-                            <div class="m-logo" style="background:${logoColor}">${sym.charAt(0)}</div>
-                            <div style="text-align:left;">
-                                <div class="m-sym">${sym}</div>
-                                <div class="m-desc">${desc.substring(0,25)}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td style="text-align:right;">
-                        <div class="m-price">${price.toLocaleString('id-ID')}</div>
-                        <div class="m-chg" style="color:${clr};">${sChg}${chgAbs}(${sChg}${chgPct.toFixed(2)}%)</div>
-                    </td>
-                    <td style="text-align:right; padding-right:16px;">
-                        <div class="m-price">${valStr}</div>
-                        <div class="m-chg">Vol: ${volStr}</div>
-                    </td>
-                `;
-                tb.appendChild(tr);
-            });
+            window.currentScreenerData = res.data;
+            document.getElementById('sort-icon-symbol').textContent = '';
+            document.getElementById('sort-icon-price').textContent = '';
+            document.getElementById('sort-icon-value').textContent = '';
+            window.screenerSortField = '';
+            
+            if (window.renderScreenerTable) window.renderScreenerTable();
         })
         .catch(e => {
             tb.innerHTML = `<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--down);">Error: ${e.message}</td></tr>`;

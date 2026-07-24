@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260724_1508">
+<link rel="stylesheet" href="style.css?v=20260724_1513">
 </head>
 <body>
 
@@ -201,9 +201,9 @@
                 <table class="wl-table movers-table">
                     <thead>
                         <tr>
-                            <th style="text-align:left; padding-left:16px;">Symbol</th>
-                            <th style="text-align:right;">Price</th>
-                            <th style="text-align:right; padding-right:16px;">Value</th>
+                            <th style="text-align:left; padding-left:16px; cursor:pointer;" onclick="if(window.sortScreenerData) window.sortScreenerData('symbol')">Symbol <span id="sort-icon-symbol" style="color:var(--primary);font-size:10px;"></span></th>
+                            <th style="text-align:right; cursor:pointer;" onclick="if(window.sortScreenerData) window.sortScreenerData('price')">Price <span id="sort-icon-price" style="color:var(--primary);font-size:10px;"></span></th>
+                            <th style="text-align:right; padding-right:16px; cursor:pointer;" onclick="if(window.sortScreenerData) window.sortScreenerData('value')">Value <span id="sort-icon-value" style="color:var(--primary);font-size:10px;"></span></th>
                         </tr>
                     </thead>
                     <tbody id="screener-tbody">
@@ -606,7 +606,7 @@
     </div>
 </div>
 
-<script src="main.js?v=20260724_1508"></script>
+<script src="main.js?v=20260724_1513"></script>
 
     <!-- Row Action Modal (Bottom Sheet) -->
     <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">

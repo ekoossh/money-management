@@ -1692,11 +1692,13 @@ window.updatePresetSelect = () => {
         if (saveBtn && saveBtn.parentNode) {
             const parent = saveBtn.parentNode;
             parent.innerHTML = `
-                <div id="scr-preset-wrapper" style="flex:1;">
-                    ${selectHtml}
+                <div style="display:flex; gap:8px; width:100%; align-items:center; overflow-x:auto;">
+                    <div id="scr-preset-wrapper" style="flex:1; min-width:110px;">
+                        ${selectHtml}
+                    </div>
+                    <button class="btn btn-secondary" onclick="if(window.saveCustomPreset) window.saveCustomPreset()" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0;">Save</button>
+                    <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0; background:var(--primary); color:white;">Save As</button>
                 </div>
-                <button class="btn btn-secondary" onclick="if(window.saveCustomPreset) window.saveCustomPreset()" style="padding:8px 12px; font-size:12px;">Save</button>
-                <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="padding:8px 12px; font-size:12px;">Save As</button>
             `;
         }
     } catch(e) {

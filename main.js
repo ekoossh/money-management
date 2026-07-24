@@ -2025,9 +2025,9 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
 
     // Attach period button handlers
     const periodLabels = {
-        '1D': 'Hari Ini', '5D': '5 Hari Terakhir',
-        '1M': '1 Bulan Terakhir', '3M': '3 Bulan Terakhir',
-        'YTD': 'Tahun Ini (YTD)', '12M': '1 Tahun Terakhir', '60M': '5 Tahun Terakhir'
+        '5D': '5 Hari Terakhir', '1M': '1 Bulan Terakhir',
+        '3M': '3 Bulan Terakhir', 'YTD': 'Tahun Ini (YTD)',
+        '12M': '1 Tahun Terakhir', '60M': '5 Tahun Terakhir'
     };
     document.querySelectorAll('.dp-period').forEach(btn => {
         btn.onclick = () => {

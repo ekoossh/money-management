@@ -1980,13 +1980,13 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct, openPx, highPx, lowP
     }
     
     
-    // Align panel top edge to topbar
+    // Align panel top edge to just below topbar (between topbar and bottom nav)
     const topbar = document.querySelector('.topbar');
     if (topbar) {
         const rect = topbar.getBoundingClientRect();
-        $('stock-detail-panel').style.top = rect.top + 'px';
+        $('stock-detail-panel').style.top = rect.bottom + 'px';
     } else {
-        $('stock-detail-panel').style.top = '0px';
+        $('stock-detail-panel').style.top = '64px';
     }
     
     $('stock-detail-panel').classList.add('active');
@@ -2091,9 +2091,7 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct, openPx, highPx, lowP
                     scaleMargins: { top: 0.1, bottom: 0.1 }
                 },
                 timeScale: {
-                    borderVisible: false,
-                    timeVisible: false,
-                    secondsVisible: false
+                    visible: false
                 },
                 handleScroll: false,
                 handleScale: false

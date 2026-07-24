@@ -1719,7 +1719,7 @@ body.font-kecil {
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-top: 1px solid var(--border);
-        z-index: 50;
+        z-index: 200 !important;
         align-items: center;
         justify-content: space-around;
         gap: 0px;

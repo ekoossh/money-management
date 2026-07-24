@@ -16,8 +16,8 @@ const renderCustomSelect = (id, options, selectedVal, className = 'add-input', s
     return `
         <div class="custom-select" style="${styles}">
             <input type="hidden" id="${id}" value="${selectedVal}">
-            <div class="custom-select-trigger ${className}" style="display:flex; justify-content:space-between; align-items:center; width:100%; height:100%;">
-                <span class="custom-select-text" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:inline-block; max-width:85%;">${selectedLabel}</span>
+            <div class="custom-select-trigger ${className}" style="display:flex; justify-content:space-between; align-items:center; width:100%; height:100%; font-size:inherit;">
+                <span class="custom-select-text" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:inline-block; max-width:85%; font-size:inherit;">${selectedLabel}</span>
                 <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--text-3)" stroke-width="2" fill="none" style="flex-shrink:0; margin-left:4px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
             </div>
             <div class="custom-select-options">
@@ -1675,8 +1675,20 @@ window.screenerCustomPresets = JSON.parse(localStorage.getItem('screenerCustomPr
 window.currentCustomPresetName = '';
 
 window.updatePresetSelect = () => {
-    const wrapper = $('scr-preset-wrapper');
-    if (!wrapper) return;
+    let wrapper = $('scr-preset-wrapper');
+    
+    // Fallback if index.html is cached and still has the old <select>
+    if (!wrapper) {
+        const oldSel = $('scr-preset-select');
+        if (oldSel && oldSel.tagName === 'SELECT') {
+            wrapper = document.createElement('div');
+            wrapper.id = 'scr-preset-wrapper';
+            wrapper.style.flex = '1';
+            oldSel.parentNode.replaceChild(wrapper, oldSel);
+        } else {
+            return;
+        }
+    }
     
     const opts = [{val:'', label:'-- Pilih Preset Tersimpan --'}];
     Object.keys(window.screenerCustomPresets).forEach(k => opts.push({val:k, label:k}));

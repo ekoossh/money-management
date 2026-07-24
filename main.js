@@ -1458,6 +1458,9 @@ window.renderScreenerTable = () => {
         const chgPct = item.d[4] || 0;
         const valueTraded = item.d[5] || 0;
         const volume = item.d[6] || 0;
+        const openPx = item.d[7] || 0;
+        const highPx = item.d[8] || 0;
+        const lowPx  = item.d[9] || 0;
         
         const isUp = chgAbs > 0;
         const isDown = chgAbs < 0;
@@ -1469,7 +1472,7 @@ window.renderScreenerTable = () => {
         const logoColor = getLogoColor(sym.charAt(0));
 
         const tr = document.createElement('tr');
-        tr.onclick = () => { if(window.openStockDetail) window.openStockDetail(sym, desc, price, chgAbs, chgPct); };
+        tr.onclick = () => { if(window.openStockDetail) window.openStockDetail(sym, desc, price, chgAbs, chgPct, openPx, highPx, lowPx); };
         tr.style.cursor = 'pointer';
         tr.innerHTML = `
             <td>
@@ -1563,7 +1566,7 @@ const runScreener = () => {
         options: {"lang":"en"},
         markets: ["indonesia"],
         symbols: symbols,
-        columns: ["name","description","close","change_abs","change","Value.Traded","volume"],
+        columns: ["name","description","close","change_abs","change","Value.Traded","volume","open","high","low"],
         sort: sort,
         range: [0, 100]
     });
@@ -1948,10 +1951,13 @@ window.loadCustomPreset = (name) => {
 let currentDetailSymbol = '';
 let currentDetailPrice = 0;
 
-window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
+window.openStockDetail = (sym, desc, price, chgAbs, chgPct, openPx, highPx, lowPx) => {
     currentDetailSymbol = sym;
     currentDetailPrice = price;
     window.currentDetailChgAbs = chgAbs;
+    window.currentDetailOpen   = openPx;
+    window.currentDetailHigh   = highPx;
+    window.currentDetailLow    = lowPx;
     
     $('dp-symbol').textContent = sym;
     $('dp-name').textContent = desc || sym;
@@ -2103,34 +2109,64 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
                 wickUpColor:     '#26a69a',
                 wickDownColor:   '#ef5350'
             });
-            // Guarantee latest candle matches current live price (e.g. 7475)
+            // Guarantee latest candle matches current live OHLC (Open, High, Low, Close)
             if (candles.length && typeof currentDetailPrice === 'number' && currentDetailPrice > 0) {
-                const livePx = currentDetailPrice;
-                const chgAbs = window.currentDetailChgAbs || 0;
+                const liveClose = currentDetailPrice;
+                const chgAbs    = window.currentDetailChgAbs || 0;
+                const liveOpen  = window.currentDetailOpen  || Math.max(1, liveClose - chgAbs);
+                const liveHigh  = window.currentDetailHigh  || Math.max(liveOpen, liveClose);
+                const liveLow   = window.currentDetailLow   || Math.min(liveOpen, liveClose);
+
                 const lastCandle = candles[candles.length - 1];
                 const lastDateStr = new Date(lastCandle.time * 1000).toISOString().split('T')[0];
                 const todayDateStr = new Date().toISOString().split('T')[0];
 
                 if (lastDateStr < todayDateStr) {
                     // Today's candle is missing, append it
-                    const openPx = Math.max(1, livePx - chgAbs);
                     candles.push({
                         time:  lastCandle.time + 86400,
-                        open:  Math.round(openPx),
-                        high:  Math.round(Math.max(openPx, livePx)),
-                        low:   Math.round(Math.min(openPx, livePx)),
-                        close: Math.round(livePx)
+                        open:  Math.round(liveOpen),
+                        high:  Math.round(Math.max(liveOpen, liveHigh, liveClose)),
+                        low:   Math.round(Math.min(liveOpen, liveLow, liveClose)),
+                        close: Math.round(liveClose)
                     });
                 } else {
-                    // Update today's candle close with current live price
-                    lastCandle.close = Math.round(livePx);
-                    if (livePx > lastCandle.high) lastCandle.high = Math.round(livePx);
-                    if (livePx < lastCandle.low)  lastCandle.low  = Math.round(livePx);
+                    // Update today's candle OHLC with live values
+                    lastCandle.open  = Math.round(liveOpen);
+                    lastCandle.high  = Math.round(Math.max(lastCandle.high || 0, liveHigh, liveClose));
+                    lastCandle.low   = Math.round(Math.min(lastCandle.low  || Infinity, liveLow, liveClose));
+                    lastCandle.close = Math.round(liveClose);
                 }
             }
 
             series.setData(candles);
             _lwChart.timeScale().fitContent();
+
+            // Dynamic OHLC display (header + hover crosshair)
+            const updateOhlcDisplay = (c) => {
+                if (!c) return;
+                if ($('dp-open'))  $('dp-open').textContent  = c.open  ? Number(c.open).toLocaleString('id-ID')  : '—';
+                if ($('dp-high'))  $('dp-high').textContent  = c.high  ? Number(c.high).toLocaleString('id-ID')  : '—';
+                if ($('dp-low'))   $('dp-low').textContent   = c.low   ? Number(c.low).toLocaleString('id-ID')   : '—';
+                if ($('dp-close')) $('dp-close').textContent = c.close ? Number(c.close).toLocaleString('id-ID') : '—';
+            };
+
+            // Display latest candle OHLC initially
+            if (candles.length) {
+                updateOhlcDisplay(candles[candles.length - 1]);
+            }
+
+            // Update OHLC when hovering over candles
+            _lwChart.subscribeCrosshairMove(param => {
+                if (!param || !param.time || !param.seriesData) {
+                    if (candles.length) updateOhlcDisplay(candles[candles.length - 1]);
+                    return;
+                }
+                const cData = param.seriesData.get(series);
+                if (cData) {
+                    updateOhlcDisplay(cData);
+                }
+            });
 
             // Resize observer
             new ResizeObserver(() => {

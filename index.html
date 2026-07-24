@@ -614,7 +614,7 @@
 <!-- Lightweight Charts (open-source, by TradingView) -->
 <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
 
-<script src="main.js?v=20260725_0150"></script>
+<script src="main.js?v=20260725_0155"></script>
 
     <!-- Row Action Modal (Bottom Sheet) -->
     <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">
@@ -652,12 +652,18 @@
         </button>
     </div>
 
-    <!-- Row 2: company name + big price + change -->
+    <!-- Row 2: company name + big price + change + OHLC -->
     <div class="dp-info">
         <div id="dp-name" class="dp-company">—</div>
         <div id="dp-price" class="dp-price-big">0</div>
         <div id="dp-change" class="dp-change-row">
             <span>0 (0%)</span>&nbsp;<span class="dp-period-label">Hari Ini</span>
+        </div>
+        <div id="dp-ohlc" style="display:flex; gap:10px; margin-top:8px; font-size:11px; font-family:var(--font-mono, monospace);">
+            <div><span style="color:var(--text-3);">O</span> <span id="dp-open" style="color:var(--text-1); font-weight:600;">—</span></div>
+            <div><span style="color:var(--text-3);">H</span> <span id="dp-high" style="color:var(--up); font-weight:600;">—</span></div>
+            <div><span style="color:var(--text-3);">L</span> <span id="dp-low" style="color:var(--down); font-weight:600;">—</span></div>
+            <div><span style="color:var(--text-3);">C</span> <span id="dp-close" style="color:var(--text-1); font-weight:600;">—</span></div>
         </div>
     </div>
 

@@ -223,7 +223,7 @@ input[type=number] { -moz-appearance: textfield; }
 .topbar-title { flex-shrink: 0; }
 .topbar-title h1 {
     font-size: calc(20px - var(--fs-diff, 0px));
-    font-weight: 500;
+    font-weight: 700;
     color: var(--text-1);
     line-height: 1.1;
     letter-spacing: -0.01em;

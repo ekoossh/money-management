@@ -1737,28 +1737,42 @@ window.saveCustomPreset = () => {
 };
 
 function savePresetWithName(name) {
-    const code = $('scr-code')?.value || '';
-    const container = $('filter-rows-container');
-    const rows = [];
-    if (container) {
-        for (let i=0; i<container.children.length; i++) {
-            const r = container.children[i];
-            const id = r.id.replace('filter-row-', '');
-            rows.push({
-                field: $(`fr-field-${id}`)?.value,
-                op: $(`fr-op-${id}`)?.value,
-                type: $(`fr-type-${id}`)?.value,
-                valNum: $(`fr-val-num-${id}`)?.value,
-                valInd: $(`fr-val-ind-${id}`)?.value
-            });
+    try {
+        const code = $('scr-code')?.value || '';
+        const container = $('filter-rows-container');
+        const rows = [];
+        if (container) {
+            for (let i=0; i<container.children.length; i++) {
+                const r = container.children[i];
+                const id = r.id.replace('filter-row-', '');
+                rows.push({
+                    field: $(`fr-field-${id}`)?.value,
+                    op: $(`fr-op-${id}`)?.value,
+                    type: $(`fr-type-${id}`)?.value,
+                    valNum: $(`fr-val-num-${id}`)?.value,
+                    valInd: $(`fr-val-ind-${id}`)?.value
+                });
+            }
         }
+        
+        if (!window.screenerCustomPresets) window.screenerCustomPresets = {};
+        window.screenerCustomPresets[name] = { code, rows };
+        localStorage.setItem('screenerCustomPresets', JSON.stringify(window.screenerCustomPresets));
+        window.currentCustomPresetName = name;
+        
+        if (window.updatePresetSelect) window.updatePresetSelect();
+        
+        toast(`Preset "${name}" berhasil disimpan!`, 'ok');
+        
+        // Timeout to allow UI to update before blocking or fetching
+        setTimeout(() => {
+            if (typeof save === 'function') save();
+        }, 300);
+        
+    } catch(err) {
+        console.error('Error saving preset:', err);
+        alert('Gagal save preset: ' + err.message);
     }
-    window.screenerCustomPresets[name] = { code, rows };
-    localStorage.setItem('screenerCustomPresets', JSON.stringify(window.screenerCustomPresets));
-    window.currentCustomPresetName = name;
-    window.updatePresetSelect();
-    if (typeof save === 'function') save();
-    alert(`Preset "${name}" berhasil disimpan!`);
 }
 
 window.loadCustomPreset = () => {

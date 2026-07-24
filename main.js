@@ -2011,13 +2011,57 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
             const yRange = rangeMap[range] || '3mo';
             const yInterval = interval || '1d';
 
-            // Fetch via GAS proxy to avoid CORS
-            const url = `${API_URL}?action=chart&sym=${symbol}&range=${yRange}&interval=${yInterval}`;
-            const res = await fetch(url);
-            const json = await res.json();
-            if (!json.ok || !json.candles || !json.candles.length) throw new Error(json.error || 'No data');
+            // Fetch via GAS proxy, fallback to allorigins if GAS returns no candles
+            let candles = [];
+            try {
+                const url = `${API_URL}?action=chart&sym=${symbol}&range=${yRange}&interval=${yInterval}`;
+                const res = await fetch(url);
+                const json = await res.json();
+                if (json && json.ok && json.candles && json.candles.length) {
+                    candles = json.candles;
+                }
+            } catch(e) {}
 
-            const candles = json.candles;
+            if (!candles.length) {
+                const targetUrl = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.JK?interval=${yInterval}&range=${yRange}`);
+                const proxyUrl = `https://api.allorigins.win/raw?url=${targetUrl}`;
+                const res = await fetch(proxyUrl);
+                const rawData = await res.json();
+                const result = rawData?.chart?.result?.[0];
+                if (!result) throw new Error('Data tidak ditemukan');
+
+                const meta = result.meta || {};
+                const timestamps = result.timestamp || [];
+                const q = result.indicators?.quote?.[0] || {};
+                candles = [];
+                for (let i = 0; i < timestamps.length; i++) {
+                    let o = q.open?.[i];
+                    let h = q.high?.[i];
+                    let l = q.low?.[i];
+                    let c = q.close?.[i];
+                    
+                    if (i === timestamps.length - 1) {
+                        if (c == null && meta.regularMarketPrice != null) c = meta.regularMarketPrice;
+                        if (h == null && meta.regularMarketDayHigh != null) h = meta.regularMarketDayHigh;
+                        if (l == null && meta.regularMarketDayLow != null) l = meta.regularMarketDayLow;
+                    }
+                    if (c == null && o != null) c = o;
+                    if (o == null && c != null) o = c;
+                    if (h == null && c != null) h = Math.max(o, c);
+                    if (l == null && c != null) l = Math.min(o, c);
+
+                    if (o == null || h == null || l == null || c == null) continue;
+                    candles.push({
+                        time: timestamps[i],
+                        open:  Math.round(o),
+                        high:  Math.round(h),
+                        low:   Math.round(l),
+                        close: Math.round(c)
+                    });
+                }
+            }
+
+            if (!candles.length) throw new Error('Candle data kosong');
 
             container.innerHTML = '';
 

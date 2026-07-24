@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260724_0730">
+<link rel="stylesheet" href="style.css?v=20260724_0734">
 </head>
 <body>
 
@@ -564,7 +564,7 @@
                 <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
             </button>
         </div>
-        <div class="add-popup-form" id="screener-custom-ui" style="padding-bottom:12px;">
+        <div class="add-popup-form" id="screener-custom-ui" style="padding-bottom:12px; max-height: 65vh; overflow-y: auto;">
                     <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center;">
                         <select id="scr-preset-select" class="field-input" style="flex:1; padding:8px 12px; font-size:13px;" onchange="if(window.loadCustomPreset) window.loadCustomPreset()">
                             <option value="">-- Pilih Preset Tersimpan --</option>
@@ -592,7 +592,7 @@
     </div>
 </div>
 
-<script src="main.js?v=20260724_0730"></script>
+<script src="main.js?v=20260724_0734"></script>
 
     <!-- Row Action Modal (Bottom Sheet) -->
     <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">

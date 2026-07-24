@@ -1575,19 +1575,23 @@ const closeScreenerModal = () => {
     const pu = document.getElementById('screener-custom-popup');
     if(bd && pu) {
         pu.classList.remove('visible');
-        setTimeout(() => bd.classList.add('hidden'), 300);
+        setTimeout(() => bd.classList.add('hidden'), 100);
     }
 };
 
 const sbd = document.getElementById('screener-custom-backdrop');
 if(sbd) {
-    sbd.addEventListener('click', e => {
+    sbd.addEventListener('mousedown', e => {
         if (e.target === sbd) closeScreenerModal();
     });
+    sbd.addEventListener('touchstart', e => {
+        if (e.target === sbd) closeScreenerModal();
+    }, {passive: true});
 }
 const sClose = document.getElementById('screener-custom-close');
 if(sClose) {
-    sClose.addEventListener('click', closeScreenerModal);
+    sClose.addEventListener('mousedown', closeScreenerModal);
+    sClose.addEventListener('touchstart', closeScreenerModal, {passive: true});
 }
 
 // Screener Custom Presets Logic

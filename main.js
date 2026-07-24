@@ -1790,19 +1790,40 @@ window.loadCustomPreset = () => {
     const container = $('filter-rows-container');
     if (container) container.innerHTML = '';
     
+    const setCustomSelectValue = (elId, val) => {
+        const hidden = $(elId);
+        if (!hidden) return;
+        hidden.value = val;
+        const wrapper = hidden.closest('.custom-select');
+        if (wrapper) {
+            const opt = wrapper.querySelector(`.custom-option[data-value="${val}"]`);
+            if (opt) {
+                const text = wrapper.querySelector('.custom-select-text');
+                if (text) text.textContent = opt.textContent;
+                wrapper.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+            }
+        }
+    };
+    
     // Load rows
     data.rows.forEach(r => {
         window.addFilterRow();
         // The newly added row has id = filterIdCounter
         const id = filterIdCounter;
-        if ($(`fr-field-${id}`)) $(`fr-field-${id}`).value = r.field;
-        if ($(`fr-op-${id}`)) $(`fr-op-${id}`).value = r.op;
-        if ($(`fr-type-${id}`)) {
-            $(`fr-type-${id}`).value = r.type;
-            toggleFilterType(id);
-        }
-        if ($(`fr-val-num-${id}`)) $(`fr-val-num-${id}`).value = r.valNum;
-        if ($(`fr-val-ind-${id}`)) $(`fr-val-ind-${id}`).value = r.valInd;
+        
+        // Timeout to allow DOM appending to finish visually before we update options
+        setTimeout(() => {
+            setCustomSelectValue(`fr-field-${id}`, r.field);
+            setCustomSelectValue(`fr-op-${id}`, r.op);
+            
+            if ($(`fr-type-${id}`)) {
+                setCustomSelectValue(`fr-type-${id}`, r.type);
+                if (window.toggleFilterType) window.toggleFilterType(id);
+            }
+            if ($(`fr-val-num-${id}`)) $(`fr-val-num-${id}`).value = r.valNum;
+            setCustomSelectValue(`fr-val-ind-${id}`, r.valInd);
+        }, 10);
     });
 };
 

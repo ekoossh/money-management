@@ -1514,47 +1514,48 @@ const runScreener = () => {
     let sort = {"sortBy":"change","sortOrder":"desc"};
     let symbols = {"query":{"types":[]},"tickers":[]};
     
-    if (preset === 'gainers') {
-        sort = {"sortBy":"change","sortOrder":"desc"};
-        filter.push({"left":"change","operation":"greater","right":1});
-    } else if (preset === 'losers') {
-          sort = {"sortBy":"change","sortOrder":"asc"};
-          filter.push({"left":"change","operation":"less","right":-1});
-      } else if (preset === 'value') {
-        sort = {"sortBy":"Value.Traded","sortOrder":"desc"};
-    } else if (preset === 'custom') {
-        const cCode = ($('scr-code')?.value || '').trim().toUpperCase();
-        if (cCode) {
-            const tc = cCode.startsWith('IDX:') ? cCode : 'IDX:' + cCode;
-            symbols.tickers = [tc];
-        }
-        
-        const container = $('filter-rows-container');
-        if (container) {
-            const rows = container.children;
-            for(let i=0; i<rows.length; i++) {
-                const row = rows[i];
-                const id = row.id.replace('filter-row-', '');
-                const field = $(`fr-field-${id}`).value;
-                const op = $(`fr-op-${id}`).value;
-                const type = $(`fr-type-${id}`).value;
-                
-                let rightVal;
-                if (type === 'num') {
-                    rightVal = parseFloat($(`fr-val-num-${id}`).value) || 0;
-                    if (field === 'volume' && op !== 'crosses_above' && op !== 'crosses_below') {
-                        rightVal *= 100; // API needs lots * 100 (shares)
-                    }
-                } else {
-                    rightVal = $(`fr-val-ind-${id}`).value;
-                }
-                
-                filter.push({"left": field, "operation": op, "right": rightVal});
-            }
-        }
+    const cCode = ($('scr-code')?.value || '').trim().toUpperCase();
+    if (cCode) {
+        const tc = cCode.startsWith('IDX:') ? cCode : 'IDX:' + cCode;
+        symbols.tickers = [tc];
+        // If user typed a code, ignore all custom filters and presets to ensure the stock is found
     } else {
-        // volume
-        sort = {"sortBy":"volume","sortOrder":"desc"};
+        if (preset === 'gainers') {
+            sort = {"sortBy":"change","sortOrder":"desc"};
+            filter.push({"left":"change","operation":"greater","right":1});
+        } else if (preset === 'losers') {
+            sort = {"sortBy":"change","sortOrder":"asc"};
+            filter.push({"left":"change","operation":"less","right":-1});
+        } else if (preset === 'value') {
+            sort = {"sortBy":"Value.Traded","sortOrder":"desc"};
+        } else if (preset === 'custom') {
+            const container = $('filter-rows-container');
+            if (container) {
+                const rows = container.children;
+                for(let i=0; i<rows.length; i++) {
+                    const row = rows[i];
+                    const id = row.id.replace('filter-row-', '');
+                    const field = $(`fr-field-${id}`).value;
+                    const op = $(`fr-op-${id}`).value;
+                    const type = $(`fr-type-${id}`).value;
+                    
+                    let rightVal;
+                    if (type === 'num') {
+                        rightVal = parseFloat($(`fr-val-num-${id}`).value) || 0;
+                        if (field === 'volume' && op !== 'crosses_above' && op !== 'crosses_below') {
+                            rightVal *= 100; // API needs lots * 100 (shares)
+                        }
+                    } else {
+                        rightVal = $(`fr-val-ind-${id}`).value;
+                    }
+                    
+                    filter.push({"left": field, "operation": op, "right": rightVal});
+                }
+            }
+        } else {
+            // volume
+            sort = {"sortBy":"volume","sortOrder":"desc"};
+        }
     }
     
     const tvPayload = JSON.stringify({

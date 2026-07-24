@@ -831,11 +831,11 @@ const renderTable = () => {
 /* ── Add/Edit Popup ────────────────────────────────────── */
 let editModeIdx = -1;
 
-const openAddPopup = (idx = -1) => {
+const openAddPopup = (idx = -1, defaultCode = "", defaultPrice = "") => {
     editModeIdx = idx;
     if (idx === -1) {
-        $('ap-code').value = '';
-        $('ap-buy').value  = '';
+        $('ap-code').value = defaultCode || '';
+        $('ap-buy').value  = defaultPrice || '';
         $('ap-sl').value   = '';
         qa('.status-pill', $('ap-status-group')).forEach(p => p.classList.toggle('active', p.dataset.val === 'order'));
         q('.add-popup-title', $('add-popup')).textContent = 'Tambah Saham';
@@ -1469,7 +1469,7 @@ window.renderScreenerTable = () => {
         const logoColor = getLogoColor(sym.charAt(0));
 
         const tr = document.createElement('tr');
-        tr.onclick = () => { if(window.addToWatchlist) window.addToWatchlist(sym, price); };
+        tr.onclick = () => { if(window.openStockDetail) window.openStockDetail(sym, desc, price, chgAbs, chgPct); };
         tr.style.cursor = 'pointer';
         tr.innerHTML = `
             <td>
@@ -1952,3 +1952,79 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.renderTemplates) window.renderTemplates();
     }, 500);
 });
+
+window.openAddPopup = openAddPopup;
+
+let currentDetailSymbol = '';
+let currentDetailPrice = 0;
+
+window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
+    currentDetailSymbol = sym;
+    currentDetailPrice = price;
+    
+    $('dp-symbol').textContent = sym;
+    $('dp-name').textContent = desc || sym;
+    $('dp-price').textContent = price.toLocaleString('id-ID');
+    
+    const isUp = chgAbs > 0;
+    const isDown = chgAbs < 0;
+    const clr = isUp ? 'var(--up)' : (isDown ? 'var(--down)' : 'var(--text-1)');
+    const sChg = isUp ? '+' : '';
+    const arrow = isUp ? '↗' : (isDown ? '↙' : '');
+    
+    $('dp-change').innerHTML = `<span style="color:${clr};">${arrow} ${Math.abs(chgAbs)} (${sChg}${chgPct.toFixed(2)}%)</span> <span style="color:var(--text-3);">Hari Ini</span>`;
+    
+    if (typeof wList !== 'undefined' && wList.some(r => r.stockCode === sym)) {
+        $('dp-btn-watchlist').style.color = 'var(--primary)';
+        $('dp-btn-watchlist').innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+    } else {
+        $('dp-btn-watchlist').style.color = 'var(--text-2)';
+        $('dp-btn-watchlist').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+    }
+    
+    $('stock-detail-panel').classList.add('active');
+    
+    $('detail-chart').innerHTML = '';
+    
+    setTimeout(() => {
+        if ($('detail-chart').innerHTML === '' && typeof TradingView !== 'undefined') {
+            new TradingView.widget({
+              "autosize": true,
+              "symbol": "IDX:" + sym,
+              "interval": "D",
+              "timezone": "Asia/Jakarta",
+              "theme": "dark",
+              "style": "1", 
+              "locale": "id",
+              "enable_publishing": false,
+              "backgroundColor": "#0c0c0e", 
+              "gridColor": "#1f1f25",
+              "hide_top_toolbar": false, 
+              "hide_legend": true,
+              "save_image": false,
+              "container_id": "detail-chart"
+            });
+        }
+    }, 350);
+};
+
+window.closeStockDetail = () => {
+    $('stock-detail-panel').classList.remove('active');
+};
+
+if ($('dp-btn-add-watchlist')) {
+    const handleAddWl = () => {
+        if (window.addToWatchlist) window.addToWatchlist(currentDetailSymbol, currentDetailPrice);
+        $('dp-btn-watchlist').style.color = 'var(--primary)';
+        $('dp-btn-watchlist').innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+    };
+    $('dp-btn-add-watchlist').onclick = handleAddWl;
+    $('dp-btn-watchlist').onclick = handleAddWl;
+}
+
+if ($('dp-btn-add-plan')) {
+    $('dp-btn-add-plan').onclick = () => {
+        if (window.openAddPopup) window.openAddPopup(-1, currentDetailSymbol, currentDetailPrice);
+        window.closeStockDetail(); // Close detail panel when opening add popup
+    };
+}

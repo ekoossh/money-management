@@ -1634,7 +1634,7 @@ window.setScreenerPreset = (val, el) => {
     const chips = document.querySelectorAll('#screener-filter-bar .filter-chip');
     
     if (val === 'custom') {
-        if (window.updatePresetSelect) window.updatePresetSelect();
+        try { if (window.updatePresetSelect) window.updatePresetSelect(); } catch(e) {}
         
         // Just open the modal, don't change active chip yet until they click run
         const bd = document.getElementById('screener-custom-backdrop');
@@ -1673,32 +1673,37 @@ if(sClose) {
 }
 
 // Screener Custom Presets Logic
-window.screenerCustomPresets = JSON.parse(localStorage.getItem('screenerCustomPresets') || '{}');
+window.screenerCustomPresets = JSON.parse(localStorage.getItem('screenerCustomPresets') || '{}') || {};
 window.currentCustomPresetName = '';
 
 window.updatePresetSelect = () => {
-    let wrapper = $('scr-preset-wrapper');
-    
-    // Fallback if index.html is cached and still has the old <select>
-    if (!wrapper) {
-        const oldSel = $('scr-preset-select');
-        if (oldSel && oldSel.tagName === 'SELECT') {
-            wrapper = document.createElement('div');
-            wrapper.id = 'scr-preset-wrapper';
-            wrapper.style.flex = '1';
-            oldSel.parentNode.replaceChild(wrapper, oldSel);
-        } else {
-            return;
+    try {
+        let wrapper = $('scr-preset-wrapper');
+        
+        // Fallback if index.html is cached and still has the old <select>
+        if (!wrapper) {
+            const oldSel = $('scr-preset-select');
+            if (oldSel && oldSel.tagName === 'SELECT') {
+                wrapper = document.createElement('div');
+                wrapper.id = 'scr-preset-wrapper';
+                wrapper.style.flex = '1';
+                oldSel.parentNode.replaceChild(wrapper, oldSel);
+            } else {
+                return;
+            }
         }
+        
+        const opts = [{val:'', label:'-- Pilih Preset Tersimpan --'}];
+        const presets = window.screenerCustomPresets || {};
+        Object.keys(presets).forEach(k => opts.push({val:k, label:k}));
+        
+        let val = window.currentCustomPresetName || '';
+        if (val && !presets[val]) val = '';
+        
+        wrapper.innerHTML = renderCustomSelect('scr-preset-select', opts, val, 'field-input', 'flex:1;');
+    } catch(e) {
+        console.error('Error rendering preset select:', e);
     }
-    
-    const opts = [{val:'', label:'-- Pilih Preset Tersimpan --'}];
-    Object.keys(window.screenerCustomPresets).forEach(k => opts.push({val:k, label:k}));
-    
-    let val = window.currentCustomPresetName || '';
-    if (val && !window.screenerCustomPresets[val]) val = '';
-    
-    wrapper.innerHTML = renderCustomSelect('scr-preset-select', opts, val, 'field-input', 'flex:1;');
 };
 
 window.saveAsCustomPreset = () => {

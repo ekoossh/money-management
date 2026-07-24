@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260725_0116">
+<link rel="stylesheet" href="style.css?v=20260725_0122">
 </head>
 <body>
 
@@ -613,7 +613,7 @@
 
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
-<script src="main.js?v=20260725_0116"></script>
+<script src="main.js?v=20260725_0122"></script>
 
     <!-- Row Action Modal (Bottom Sheet) -->
     <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">
@@ -638,29 +638,45 @@
 
 <!-- ════ STOCK DETAIL PANEL ════ -->
 <div id="stock-detail-panel" class="detail-panel">
-    <!-- Minimal header: just close + star -->
+
+    <!-- Row 1: back + symbol name + star -->
     <div class="dp-header">
         <button class="btn btn-icon" onclick="if(window.closeStockDetail) window.closeStockDetail()" style="color:var(--text-1); padding:0 8px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
         </button>
+        <div class="dp-title" id="dp-symbol">—</div>
         <div style="flex:1"></div>
         <button class="btn btn-icon" id="dp-btn-watchlist" style="color:var(--text-2); padding:0 8px;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         </button>
     </div>
 
-    <!-- Hidden data holders for JS logic -->
-    <span id="dp-symbol" style="display:none;"></span>
-    <span id="dp-name" style="display:none;"></span>
-    <span id="dp-price" style="display:none;"></span>
-    <span id="dp-change" style="display:none;"></span>
-    <span id="dp-tags" style="display:none;"></span>
+    <!-- Row 2: company name + big price + change -->
+    <div class="dp-info">
+        <div id="dp-name" class="dp-company">—</div>
+        <div id="dp-price" class="dp-price-big">0</div>
+        <div id="dp-change" class="dp-change-row">
+            <span>0 (0%)</span>&nbsp;<span class="dp-period-label">Hari Ini</span>
+        </div>
+    </div>
 
-    <!-- Widget fills all remaining space -->
+    <!-- Row 3: chart -->
     <div class="dp-body" style="padding:0;">
         <div id="detail-chart" style="flex:1; width:100%; height:100%; overflow:hidden;"></div>
     </div>
 
+    <!-- Row 4: period buttons -->
+    <div class="dp-periods" id="dp-periods">
+        <button class="dp-period" data-range="1D" data-interval="5">1D</button>
+        <button class="dp-period" data-range="5D" data-interval="15">1W</button>
+        <button class="dp-period" data-range="1M" data-interval="60">1M</button>
+        <button class="dp-period active" data-range="3M" data-interval="D">3M</button>
+        <button class="dp-period" data-range="YTD" data-interval="D">YTD</button>
+        <button class="dp-period" data-range="12M" data-interval="W">1Y</button>
+        <button class="dp-period" data-range="60M" data-interval="M">5Y</button>
+    </div>
+
+    <!-- Row 5: action buttons -->
     <div class="dp-footer">
         <button class="btn btn-primary" id="dp-btn-add-watchlist" style="flex:1; font-weight:600; font-size:12px; padding:10px 8px;">Add to Watchlist</button>
         <button class="btn btn-primary" id="dp-btn-add-plan" style="flex:1; font-weight:600; font-size:12px; padding:10px 8px; background:var(--text-1); color:var(--bg-0);">Add to Trade Plan</button>

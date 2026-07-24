@@ -1958,11 +1958,11 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
     
     const isUp = chgAbs > 0;
     const isDown = chgAbs < 0;
-    const clr = isUp ? 'var(--up)' : (isDown ? 'var(--down)' : 'var(--text-1)');
     const sChg = isUp ? '+' : '';
     const arrow = isUp ? '↗' : (isDown ? '↙' : '');
+    const chgCls = isUp ? 'up' : (isDown ? 'down' : '');
     
-    $('dp-change').innerHTML = `<span style="color:${clr};">${arrow} ${Math.abs(chgAbs)} (${sChg}${chgPct.toFixed(2)}%)</span> <span style="color:var(--text-3);">Hari Ini</span>`;
+    $('dp-change').innerHTML = `<span class="${chgCls}">${arrow} ${Math.abs(chgAbs)} (${sChg}${chgPct.toFixed(2)}%)</span>&nbsp;<span class="dp-period-label">Hari Ini</span>`;
     
     if (typeof wList !== 'undefined' && wList.some(r => r.stockCode === sym)) {
         $('dp-btn-watchlist').style.color = 'var(--primary)';
@@ -1986,40 +1986,72 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
     
     $('stock-detail-panel').classList.add('active');
     
-    $('detail-chart').innerHTML = '';
-    
-    setTimeout(() => {
-        if ($('detail-chart').innerHTML === '' && typeof TradingView !== 'undefined') {
-            new TradingView.MediumWidget({
-              "symbols": [ [sym, "IDX:" + sym + "|3M"] ],
-              "chartOnly": false,
-              "width": "100%",
-              "height": "100%",
-              "locale": "id",
-              "colorTheme": "dark",
-              "autosize": true,
-              "showVolume": false,
-              "hideDateRanges": false,
-              "hideMarketStatus": true,
-              "hideSymbolLogo": false,
-              "scalePosition": "right",
-              "scaleMode": "Normal",
-              "fontFamily": "Poppins, sans-serif",
-              "fontSize": "10",
-              "noTimeScale": false,
-              "valuesTracking": "1",
-              "changeMode": "price-and-percent",
-              "chartType": "candlesticks",
-              "upColor": "#26a69a",
-              "downColor": "#ef5350",
-              "borderUpColor": "#26a69a",
-              "borderDownColor": "#ef5350",
-              "wickUpColor": "#26a69a",
-              "wickDownColor": "#ef5350",
-              "container_id": "detail-chart"
-            });
-        }
-    }, 350);
+    // Helper to build the TradingView chart
+    window._buildDetailChart = (symbol, range, interval) => {
+        $('detail-chart').innerHTML = '';
+        if (typeof TradingView === 'undefined') return;
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": "IDX:" + symbol,
+            "interval": interval || "D",
+            "range": range || "3M",
+            "timezone": "Asia/Jakarta",
+            "theme": "dark",
+            "style": "1",
+            "locale": "id",
+            "toolbar_bg": "#0c0c0e",
+            "enable_publishing": false,
+            "hide_top_toolbar": true,
+            "hide_side_toolbar": true,
+            "hide_legend": true,
+            "hide_bottom_toolbar": true,
+            "allow_symbol_change": false,
+            "save_image": false,
+            "container_id": "detail-chart",
+            "disabled_features": ["left_toolbar","volume_force_overlay","border_around_the_chart","header_saveload","header_fullscreen_button"],
+            "overrides": {
+                "paneProperties.background": "#0c0c0e",
+                "paneProperties.backgroundType": "solid",
+                "scalesProperties.backgroundColor": "#0c0c0e",
+                "mainSeriesProperties.candleStyle.upColor": "#26a69a",
+                "mainSeriesProperties.candleStyle.downColor": "#ef5350",
+                "mainSeriesProperties.candleStyle.borderUpColor": "#26a69a",
+                "mainSeriesProperties.candleStyle.borderDownColor": "#ef5350",
+                "mainSeriesProperties.candleStyle.wickUpColor": "#26a69a",
+                "mainSeriesProperties.candleStyle.wickDownColor": "#ef5350"
+            }
+        });
+    };
+
+    // Attach period button handlers
+    const periodLabels = {
+        '1D': 'Hari Ini', '5D': '5 Hari Terakhir',
+        '1M': '1 Bulan Terakhir', '3M': '3 Bulan Terakhir',
+        'YTD': 'Tahun Ini (YTD)', '12M': '1 Tahun Terakhir', '60M': '5 Tahun Terakhir'
+    };
+    document.querySelectorAll('.dp-period').forEach(btn => {
+        btn.onclick = () => {
+            document.querySelectorAll('.dp-period').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const range = btn.dataset.range;
+            const interval = btn.dataset.interval;
+            // Update period label in dp-change
+            const lbl = $('dp-change').querySelector('.dp-period-label');
+            if (lbl) lbl.textContent = periodLabels[range] || range;
+            window._buildDetailChart(currentDetailSymbol, range, interval);
+        };
+    });
+
+    // Reset to default 3M active
+    document.querySelectorAll('.dp-period').forEach(b => b.classList.remove('active'));
+    const btn3M = document.querySelector('.dp-period[data-range="3M"]');
+    if (btn3M) btn3M.classList.add('active');
+
+    // Update period label
+    const lbl = $('dp-change').querySelector('.dp-period-label');
+    if (lbl) lbl.textContent = '3 Bulan Terakhir';
+
+    setTimeout(() => { window._buildDetailChart(sym, '3M', 'D'); }, 350);
 };
 
 window.closeStockDetail = () => {

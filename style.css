@@ -2723,3 +2723,82 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
         bottom: 56px; /* keep above bottom nav */
     }
 }
+
+/* ── Stock detail: info section ── */
+.dp-info {
+    padding: 10px 16px 8px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border-1);
+}
+.dp-company {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.dp-price-big {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-1);
+    letter-spacing: -0.5px;
+}
+.dp-change-row {
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.dp-change-row .up   { color: var(--up); }
+.dp-change-row .down { color: var(--down); }
+.dp-period-label {
+    color: var(--text-3);
+    font-weight: 400;
+}
+
+/* ── Stock detail: period buttons ── */
+.dp-periods {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 6px 8px;
+    background: var(--bg-0);
+    border-top: 1px solid var(--border-1);
+    flex-shrink: 0;
+}
+.dp-period {
+    background: none;
+    border: none;
+    color: var(--text-3);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 6px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: inherit;
+    transition: color 0.15s, background 0.15s;
+    position: relative;
+}
+.dp-period:hover {
+    color: var(--text-1);
+    background: var(--bg-2);
+}
+.dp-period.active {
+    color: var(--primary);
+}
+.dp-period.active::after {
+    content: '';
+    display: block;
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 2px;
+    background: var(--primary);
+    border-radius: 2px;
+}

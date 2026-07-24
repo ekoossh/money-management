@@ -1809,8 +1809,8 @@ window.loadCustomPreset = () => {
     // Load rows
     data.rows.forEach(r => {
         window.addFilterRow();
-        // The newly added row has id = filterIdCounter
-        const id = filterIdCounter;
+        // The newly added row has id = filterRowCount
+        const id = filterRowCount;
         
         // Timeout to allow DOM appending to finish visually before we update options
         setTimeout(() => {

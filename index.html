@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260724_0857">
+<link rel="stylesheet" href="style.css?v=20260724_1130">
 </head>
 <body>
 
@@ -566,11 +566,11 @@
         </div>
         <div class="add-popup-form" id="screener-custom-ui" style="padding-bottom:12px; max-height: 65vh; overflow-y: auto;">
                     <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center;">
-                        <div id="scr-preset-wrapper" style="flex:1;">
+                        <div id="scr-preset-wrapper" style="flex:1; min-width:0;">
                             <!-- populated by updatePresetSelect -->
                         </div>
-                        <button class="btn btn-secondary" onclick="if(window.saveCustomPreset) window.saveCustomPreset()" style="padding:8px 12px; font-size:12px;">Save</button>
-                        <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="padding:8px 12px; font-size:12px;">Save As</button>
+                        <button class="btn btn-secondary" onclick="if(window.saveCustomPreset) window.saveCustomPreset()" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0;">Save</button>
+                        <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0;">Save As</button>
                     </div>
 
                     <div style="margin-bottom:12px;">
@@ -592,7 +592,7 @@
     </div>
 </div>
 
-<script src="main.js?v=20260724_0857"></script>
+<script src="main.js?v=20260724_1130"></script>
 
     <!-- Row Action Modal (Bottom Sheet) -->
     <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">

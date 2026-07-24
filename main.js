@@ -1687,19 +1687,9 @@ window.updatePresetSelect = () => {
         
         const selectHtml = renderCustomSelect('scr-preset-select', opts, val, 'add-input', 'flex:1; min-width:0; font-size:13px; padding:0 8px;');
         
-        // Brute force: Rebuild the entire button row
-        const saveBtn = document.querySelector('button[onclick*="saveCustomPreset"]');
-        if (saveBtn && saveBtn.parentNode) {
-            const parent = saveBtn.parentNode;
-            parent.innerHTML = `
-                <div style="display:flex; gap:8px; width:100%; align-items:center;">
-                    <div id="scr-preset-wrapper" style="flex:1; min-width:0;">
-                        ${selectHtml}
-                    </div>
-                    <button class="btn btn-secondary" onclick="if(window.saveCustomPreset) window.saveCustomPreset()" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0;">Save</button>
-                    <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0;">Save As</button>
-                </div>
-            `;
+        let wrapper = document.getElementById('scr-preset-wrapper');
+        if (wrapper) {
+            wrapper.innerHTML = selectHtml;
         }
     } catch(e) {
         console.error('Error rendering preset select:', e);

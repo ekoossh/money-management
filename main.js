@@ -1990,27 +1990,28 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
     
     setTimeout(() => {
         if ($('detail-chart').innerHTML === '' && typeof TradingView !== 'undefined') {
-            new TradingView.widget({
-              "autosize": true,
-              "symbol": "IDX:" + sym,
-              "interval": "D",
-              "timezone": "Asia/Jakarta",
-              "theme": "dark",
-              "style": "1", // 1 = Candlestick
-              "locale": "id",
-              "enable_publishing": false,
-              "backgroundColor": "#0c0c0e", 
-              "gridColor": "#1f1f25",
-              "hide_top_toolbar": true, 
-              "hide_legend": true,
-              "save_image": false,
-              "disabled_features": [
-                                    "left_toolbar", 
-                  "zoom", 
-                  "pan"
-              ],
-              "container_id": "detail-chart"
-            });
+            new TradingView.MediumWidget({
+  "symbols": [ [sym, "IDX:" + sym + "|1D"] ],
+  "chartOnly": false,
+  "width": "100%",
+  "height": "100%",
+  "locale": "id",
+  "colorTheme": "dark",
+  "autosize": true,
+  "showVolume": false,
+  "hideDateRanges": false,
+  "hideMarketStatus": true,
+  "hideSymbolLogo": true,
+  "scalePosition": "none",
+  "scaleMode": "Normal",
+  "fontFamily": "Poppins, sans-serif",
+  "fontSize": "10",
+  "noTimeScale": false,
+  "valuesTracking": "1",
+  "changeMode": "price-and-percent",
+  "chartType": "candlesticks",
+  "container_id": "detail-chart"
+});
         }
     }, 350);
 };

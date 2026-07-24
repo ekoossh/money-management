@@ -1,3 +1,68 @@
+
+// ═══════ CUSTOM SELECT LOGIC ═══════
+const renderCustomSelect = (id, options, selectedVal, className = 'add-input', styles = '') => {
+    let selectedLabel = '';
+    let optsHtml = '';
+    options.forEach(o => {
+        const isSel = (o.val == selectedVal);
+        if (isSel) selectedLabel = o.label;
+        optsHtml += `<div class="custom-option ${isSel ? 'selected' : ''}" data-value="${o.val}">${o.label}</div>`;
+    });
+    if (!selectedLabel && options.length > 0) {
+        selectedLabel = options[0].label;
+        selectedVal = options[0].val;
+        optsHtml = optsHtml.replace('class="custom-option "', 'class="custom-option selected "');
+    }
+    return `
+        <div class="custom-select" style="${styles}">
+            <input type="hidden" id="${id}" value="${selectedVal}">
+            <div class="custom-select-trigger ${className}" style="display:flex; justify-content:space-between; align-items:center; width:100%; height:100%;">
+                <span class="custom-select-text" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:inline-block; max-width:85%;">${selectedLabel}</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--text-3)" stroke-width="2" fill="none" style="flex-shrink:0; margin-left:4px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+            <div class="custom-select-options">
+                ${optsHtml}
+            </div>
+        </div>
+    `;
+};
+
+document.addEventListener('click', e => {
+    const trigger = e.target.closest('.custom-select-trigger');
+    if (trigger) {
+        const wrapper = trigger.closest('.custom-select');
+        document.querySelectorAll('.custom-select.open').forEach(el => {
+            if (el !== wrapper) el.classList.remove('open');
+        });
+        wrapper.classList.toggle('open');
+        e.stopPropagation();
+        return;
+    }
+    
+    const opt = e.target.closest('.custom-option');
+    if (opt) {
+        const wrapper = opt.closest('.custom-select');
+        const hidden = wrapper.querySelector('input[type="hidden"]');
+        const text = wrapper.querySelector('.custom-select-text');
+        
+        hidden.value = opt.dataset.value;
+        text.textContent = opt.textContent;
+        
+        wrapper.classList.remove('open');
+        wrapper.querySelectorAll('.custom-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        
+        // Trigger specific logic
+        if (hidden.id === 'scr-preset-select' && window.loadCustomPreset) window.loadCustomPreset();
+        if (hidden.id.startsWith('fr-type-') && window.toggleFilterType) window.toggleFilterType(hidden.id.split('-')[2]);
+        
+        e.stopPropagation();
+        return;
+    }
+    
+    document.querySelectorAll('.custom-select.open').forEach(el => el.classList.remove('open'));
+});
+
 const API_URL = 'https://script.google.com/macros/s/AKfycbwyzGBjmtaQcAwtt249HgMm2SaNCM8h5peZ2aXQWLGViP4QiScyBYzHHN1X6JA0UadO/exec';
 'use strict';
 

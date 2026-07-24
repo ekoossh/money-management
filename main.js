@@ -1688,6 +1688,18 @@ window.updatePresetSelect = () => {
                 wrapper.id = 'scr-preset-wrapper';
                 wrapper.style.flex = '1';
                 oldSel.parentNode.replaceChild(wrapper, oldSel);
+            }
+        }
+        
+        // If absolutely no wrapper and no old select, inject it forcibly before the Save button
+        if (!wrapper) {
+            const saveBtn = document.querySelector('button[onclick*="saveCustomPreset"]');
+            if (saveBtn && saveBtn.parentNode) {
+                wrapper = document.createElement('div');
+                wrapper.id = 'scr-preset-wrapper';
+                wrapper.style.flex = '1';
+                wrapper.style.minWidth = '150px';
+                saveBtn.parentNode.insertBefore(wrapper, saveBtn);
             } else {
                 return;
             }
@@ -1700,9 +1712,20 @@ window.updatePresetSelect = () => {
         let val = window.currentCustomPresetName || '';
         if (val && !presets[val]) val = '';
         
-        wrapper.innerHTML = renderCustomSelect('scr-preset-select', opts, val, 'field-input', 'flex:1;');
+        // Force some CSS on wrapper just in case
+        wrapper.style.display = 'block';
+        wrapper.style.visibility = 'visible';
+        wrapper.style.opacity = '1';
+        wrapper.style.minHeight = '30px';
+        wrapper.style.flex = '1';
+        
+        wrapper.innerHTML = renderCustomSelect('scr-preset-select', opts, val, 'field-input', 'flex:1; min-height:30px;');
+        
     } catch(e) {
         console.error('Error rendering preset select:', e);
+        // Desperate fallback
+        let wrapper = $('scr-preset-wrapper');
+        if (wrapper) wrapper.innerHTML = '<div style="background:red;color:white;padding:5px;">Error: ' + e.message + '</div>';
     }
 };
 

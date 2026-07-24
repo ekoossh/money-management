@@ -2006,25 +2006,18 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
         container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-3);font-size:12px;">Memuat chart...</div>';
 
         try {
-            const ticker = symbol + '.JK';
+            // Map our range labels to Yahoo Finance range params
+            const rangeMap = { '5D':'5d','1M':'1mo','3M':'3mo','YTD':'ytd','1Y':'1y','5Y':'5y' };
             const yRange = rangeMap[range] || '3mo';
             const yInterval = interval || '1d';
-            const url = `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=${yInterval}&range=${yRange}`;
 
+            // Fetch via GAS proxy to avoid CORS
+            const url = `${API_URL}?action=chart&sym=${symbol}&range=${yRange}&interval=${yInterval}`;
             const res = await fetch(url);
             const json = await res.json();
-            const result = json?.chart?.result?.[0];
-            if (!result) throw new Error('No data');
+            if (!json.ok || !json.candles || !json.candles.length) throw new Error(json.error || 'No data');
 
-            const timestamps = result.timestamp;
-            const q = result.indicators.quote[0];
-            const candles = timestamps.map((t, i) => ({
-                time: t,
-                open:  parseFloat(q.open[i]?.toFixed(0)),
-                high:  parseFloat(q.high[i]?.toFixed(0)),
-                low:   parseFloat(q.low[i]?.toFixed(0)),
-                close: parseFloat(q.close[i]?.toFixed(0))
-            })).filter(c => c.open && c.high && c.low && c.close);
+            const candles = json.candles;
 
             container.innerHTML = '';
 

@@ -1980,15 +1980,13 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct, openPx, highPx, lowP
     }
     
     
-    // Dynamically align panel top to match the active section's table header row
-    const activeSection = document.querySelector('.section:not(.hidden)');
-    if (activeSection) {
-        const th = activeSection.querySelector('thead th');
-        if (th) {
-            const rect = th.getBoundingClientRect();
-            // rect.top is relative to viewport - use it directly since panel is position:fixed
-            $('stock-detail-panel').style.top = rect.top + 'px';
-        }
+    // Align panel top edge to topbar
+    const topbar = document.querySelector('.topbar');
+    if (topbar) {
+        const rect = topbar.getBoundingClientRect();
+        $('stock-detail-panel').style.top = rect.top + 'px';
+    } else {
+        $('stock-detail-panel').style.top = '0px';
     }
     
     $('stock-detail-panel').classList.add('active');
@@ -2079,22 +2077,22 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct, openPx, highPx, lowP
                 height: container.clientHeight || 240,
                 layout: {
                     background: { type: 'solid', color: '#0c0c0e' },
-                    textColor: '#9ca3af',
+                    textColor: '#6b7280',
                     fontFamily: 'Poppins, sans-serif',
-                    fontSize: 11
+                    fontSize: 10
                 },
                 grid: {
-                    vertLines: { color: '#1f1f25' },
-                    horzLines: { color: '#1f1f25' }
+                    vertLines: { visible: false },
+                    horzLines: { visible: false }
                 },
                 crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
                 rightPriceScale: {
-                    borderColor: '#2d2d35',
-                    scaleMargins: { top: 0.1, bottom: 0.15 }
+                    borderVisible: false,
+                    scaleMargins: { top: 0.1, bottom: 0.1 }
                 },
                 timeScale: {
-                    borderColor: '#2d2d35',
-                    timeVisible: range === '5D',
+                    borderVisible: false,
+                    timeVisible: false,
                     secondsVisible: false
                 },
                 handleScroll: false,
@@ -2107,7 +2105,11 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct, openPx, highPx, lowP
                 borderUpColor:   '#26a69a',
                 borderDownColor: '#ef5350',
                 wickUpColor:     '#26a69a',
-                wickDownColor:   '#ef5350'
+                wickDownColor:   '#ef5350',
+                priceFormat: {
+                    type: 'custom',
+                    formatter: price => Math.round(price).toLocaleString('id-ID')
+                }
             });
             // Guarantee latest candle matches current live OHLC (Open, High, Low, Close)
             if (candles.length && typeof currentDetailPrice === 'number' && currentDetailPrice > 0) {

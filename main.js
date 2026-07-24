@@ -1191,15 +1191,14 @@ $('filter-bar').addEventListener('click', e => {
             if (data.cfg.telegramToken) localStorage.setItem('mm_tg_token', data.cfg.telegramToken);
             if (data.cfg.telegramChatId) localStorage.setItem('mm_tg_chatid', data.cfg.telegramChatId);
             
-            if (data.cfg.screenerCustomPresets && Object.keys(data.cfg.screenerCustomPresets).length > 0) {
+            if (data.cfg.screenerCustomPresets) {
                 window.screenerCustomPresets = data.cfg.screenerCustomPresets;
                 localStorage.setItem('screenerCustomPresets', JSON.stringify(window.screenerCustomPresets));
-                if (window.updatePresetSelect) window.updatePresetSelect();
-            } else if (window.screenerCustomPresets && Object.keys(window.screenerCustomPresets).length > 0) {
-                // Initial migration: push local to cloud
-                cfg.screenerCustomPresets = window.screenerCustomPresets;
-                save();
+            } else {
+                window.screenerCustomPresets = {};
+                localStorage.setItem('screenerCustomPresets', '{}');
             }
+            if (window.updatePresetSelect) window.updatePresetSelect();
         }
         if (!cfg.telegramToken) cfg.telegramToken = localStorage.getItem('mm_tg_token') || '';
         if (!cfg.telegramChatId) cfg.telegramChatId = localStorage.getItem('mm_tg_chatid') || '';

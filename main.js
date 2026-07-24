@@ -1617,7 +1617,6 @@ window.toggleCustomUI = (val) => {
 
 
 
-});
 // Swipe to open/close sidebar on mobile
 let touchStartX = 0;
 let touchStartY = 0;
@@ -1806,6 +1805,9 @@ window.loadCustomPreset = () => {
         if ($(`fr-val-ind-${id}`)) $(`fr-val-ind-${id}`).value = r.valInd;
     });
 };
+
+
+}); // Close the main DOMContentLoaded block
 
 // Initialize preset select on load
 document.addEventListener('DOMContentLoaded', () => {

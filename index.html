@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260724_0420">
+<link rel="stylesheet" href="style.css?v=20260724_0730">
 </head>
 <body>
 
@@ -552,28 +552,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-<script src="main.js?v=20260724_0420"></script>
-
-    <!-- Row Action Modal (Bottom Sheet) -->
-    <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">
-        <div class="modal-sheet">
-            <div class="sheet-handle"></div>
-            <div class="sheet-header">
-                <h3 id="ra-title">Riwayat Status</h3>
-                <div class="action-group">
-                    <button class="icon-btn edit-btn" id="ra-edit" title="Edit" style="background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2);">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                    </button>
-                    <button class="icon-btn del-btn" id="ra-del" title="Hapus" style="background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2);">
-                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </button>
-                </div>
-            </div>
-            <div class="sheet-content" id="ra-content"></div>
-        </div>
-    </div>
-
-
 <!-- ════ SCREENER CUSTOM POPUP ════ -->
 <div class="add-backdrop hidden" id="screener-custom-backdrop">
     <div class="add-popup" id="screener-custom-popup">
@@ -613,6 +591,29 @@
                 </div>
     </div>
 </div>
+
+<script src="main.js?v=20260724_0730"></script>
+
+    <!-- Row Action Modal (Bottom Sheet) -->
+    <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+                <h3 id="ra-title">Riwayat Status</h3>
+                <div class="action-group">
+                    <button class="icon-btn edit-btn" id="ra-edit" title="Edit" style="background: rgba(96,165,250,0.1); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2);">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    </button>
+                    <button class="icon-btn del-btn" id="ra-del" title="Hapus" style="background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.2);">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="sheet-content" id="ra-content"></div>
+        </div>
+    </div>
+
+
 
 </body>
 </html>

@@ -2005,8 +2005,7 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
               "hide_legend": true,
               "save_image": false,
               "disabled_features": [
-                  "header_widget", 
-                  "left_toolbar", 
+                                    "left_toolbar", 
                   "zoom", 
                   "pan"
               ],

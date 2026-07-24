@@ -1973,13 +1973,13 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
     }
     
     
-    
-    // Dynamically align panel to the active section's table header
+    // Dynamically align panel top to match the active section's table header row
     const activeSection = document.querySelector('.section:not(.hidden)');
     if (activeSection) {
-        const thead = activeSection.querySelector('.movers-table thead');
-        if (thead) {
-            const rect = thead.getBoundingClientRect();
+        const th = activeSection.querySelector('thead th');
+        if (th) {
+            const rect = th.getBoundingClientRect();
+            // rect.top is relative to viewport - use it directly since panel is position:fixed
             $('stock-detail-panel').style.top = rect.top + 'px';
         }
     }

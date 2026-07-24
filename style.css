@@ -2667,19 +2667,18 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
 /* ==================== STOCK DETAIL PANEL ==================== */
 .detail-panel {
     position: fixed;
-    /* top will be set by JS dynamically */
-    bottom: 0;
+    top: 120px; /* Default fallback; JS will override with exact thead position */
+    bottom: 56px; /* Always above the bottom nav bar */
     right: 0;
-    width: calc(100% - 90px); /* Leave 90px for Symbol column */
-    max-width: 500px;
-    background: var(--bg-2); /* slightly lighter for contrast */
+    width: calc(100% - 90px); /* Leave ~90px for Symbol column on left */
+    background: var(--bg-0);
     z-index: 151;
     transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Prevent panel scrolling */
-    box-shadow: -8px 0 24px rgba(0,0,0,0.8);
+    overflow: hidden;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.9);
     border-left: 1px solid var(--border-1);
     border-top-left-radius: 12px;
 }
@@ -2721,6 +2720,6 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
 
 @media (max-width: 768px) {
     .detail-panel {
-        bottom: 56px;
+        bottom: 56px; /* keep above bottom nav */
     }
 }

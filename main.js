@@ -643,7 +643,6 @@ const renderTable = () => {
                         const chgClass = chg > 0 ? ' up' : (chg < 0 ? ' down' : '');
                         const chgStr = chg > 0 ? ` (+${chg.toFixed(1)}%)` : (chg < 0 ? ` (${chg.toFixed(1)}%)` : '');
                         return `<div class="tp-val-bot${chgClass}">${fmtIDR(pInfo.price)}${chgStr}</div>`;
-                    })()}">Rp ${fmtIDR(pInfo.price)}</div>`;
                     })()}
                 </div>
             </td>

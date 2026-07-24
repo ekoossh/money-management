@@ -1951,6 +1951,7 @@ let currentDetailPrice = 0;
 window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
     currentDetailSymbol = sym;
     currentDetailPrice = price;
+    window.currentDetailChgAbs = chgAbs;
     
     $('dp-symbol').textContent = sym;
     $('dp-name').textContent = desc || sym;
@@ -2102,6 +2103,32 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
                 wickUpColor:     '#26a69a',
                 wickDownColor:   '#ef5350'
             });
+            // Guarantee latest candle matches current live price (e.g. 7475)
+            if (candles.length && typeof currentDetailPrice === 'number' && currentDetailPrice > 0) {
+                const livePx = currentDetailPrice;
+                const chgAbs = window.currentDetailChgAbs || 0;
+                const lastCandle = candles[candles.length - 1];
+                const lastDateStr = new Date(lastCandle.time * 1000).toISOString().split('T')[0];
+                const todayDateStr = new Date().toISOString().split('T')[0];
+
+                if (lastDateStr < todayDateStr) {
+                    // Today's candle is missing, append it
+                    const openPx = Math.max(1, livePx - chgAbs);
+                    candles.push({
+                        time:  lastCandle.time + 86400,
+                        open:  Math.round(openPx),
+                        high:  Math.round(Math.max(openPx, livePx)),
+                        low:   Math.round(Math.min(openPx, livePx)),
+                        close: Math.round(livePx)
+                    });
+                } else {
+                    // Update today's candle close with current live price
+                    lastCandle.close = Math.round(livePx);
+                    if (livePx > lastCandle.high) lastCandle.high = Math.round(livePx);
+                    if (livePx < lastCandle.low)  lastCandle.low  = Math.round(livePx);
+                }
+            }
+
             series.setData(candles);
             _lwChart.timeScale().fitContent();
 

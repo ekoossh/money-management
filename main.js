@@ -1771,7 +1771,7 @@ function savePresetWithName(name) {
         
     } catch(err) {
         console.error('Error saving preset:', err);
-        alert('Gagal save preset: ' + err.message);
+        alert('Gagal save preset: ' + err.message + '\nStack:\n' + (err.stack || ''));
     }
 }
 

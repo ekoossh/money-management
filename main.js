@@ -1972,26 +1972,42 @@ window.openStockDetail = (sym, desc, price, chgAbs, chgPct) => {
         $('dp-btn-watchlist').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
     }
     
+    
+    const mc = document.querySelector('.movers-table thead');
+    if (mc) {
+        const rect = mc.getBoundingClientRect();
+        $('stock-detail-panel').style.top = rect.top + 'px';
+    }
+    
     $('stock-detail-panel').classList.add('active');
     
     $('detail-chart').innerHTML = '';
     
     setTimeout(() => {
         if ($('detail-chart').innerHTML === '' && typeof TradingView !== 'undefined') {
-            new TradingView.widget({
-              "autosize": true,
-              "symbol": "IDX:" + sym,
-              "interval": "D",
-              "timezone": "Asia/Jakarta",
-              "theme": "dark",
-              "style": "1", 
+            new TradingView.MediumWidget({
+              "symbols": [ [sym, "IDX:" + sym + "|1D"] ],
+              "chartOnly": false,
+              "width": "100%",
+              "height": "100%",
               "locale": "id",
-              "enable_publishing": false,
-              "backgroundColor": "#0c0c0e", 
-              "gridColor": "#1f1f25",
-              "hide_top_toolbar": false, 
-              "hide_legend": true,
-              "save_image": false,
+              "colorTheme": "dark",
+              "autosize": true,
+              "showVolume": false,
+              "hideDateRanges": false,
+              "hideMarketStatus": true,
+              "hideSymbolLogo": true,
+              "scalePosition": "none",
+              "scaleMode": "Normal",
+              "fontFamily": "Poppins, sans-serif",
+              "fontSize": "10",
+              "noTimeScale": false,
+              "valuesTracking": "1",
+              "changeMode": "price-and-percent",
+              "chartType": "area",
+              "lineColor": "#a3e635",
+              "bottomColor": "rgba(163, 230, 53, 0)",
+              "topColor": "rgba(163, 230, 53, 0.3)",
               "container_id": "detail-chart"
             });
         }

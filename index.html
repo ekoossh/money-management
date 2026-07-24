@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260724_1130">
+<link rel="stylesheet" href="style.css?v=20260724_1140">
 </head>
 <body>
 
@@ -184,6 +184,9 @@
         
         <!-- ════ SCREENER ════ -->
         <section class="section hidden" id="screener">
+            <div style="margin-bottom:12px; position: sticky; top: 0; background: var(--bg-1); z-index: 10; padding-top: 12px;">
+                <input type="text" id="scr-code" class="add-input" placeholder="Ketik kode saham (Misal: BBCA) lalu tunggu sebentar..." style="width:100%; padding: 10px 14px; font-size: 13px; border-radius: 8px; background: var(--bg-2);" autocomplete="off" spellcheck="false">
+            </div>
                         <div class="sticky-filter" style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; gap:8px; max-width:100%;">
                 <div class="filter-bar" id="screener-filter-bar" style="flex:1; margin-bottom:0; overflow-x:auto; padding-bottom:4px; flex-wrap:nowrap;">
                     <div class="filter-chip active" onclick="if(window.setScreenerPreset) window.setScreenerPreset('custom', this)">Custom</div>
@@ -573,9 +576,7 @@
                         <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0;">Save As</button>
                     </div>
 
-                    <div style="margin-bottom:12px;">
-                        <input type="text" id="scr-code" class="add-input" placeholder="Ketik kode saham (Misal: BBCA) atau kosongkan..." style="width:100%; padding: 10px 14px; font-size: 13px; border-radius: 8px;">
-                    </div>
+
                     
                     <div style="font-size:11px; font-weight:600; color:var(--text-2); margin-bottom:8px;">Kriteria Filter:</div>
                     <div id="filter-rows-container" style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
@@ -592,7 +593,7 @@
     </div>
 </div>
 
-<script src="main.js?v=20260724_1130"></script>
+<script src="main.js?v=20260724_1140"></script>
 
     <!-- Row Action Modal (Bottom Sheet) -->
     <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">

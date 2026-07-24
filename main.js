@@ -1521,6 +1521,17 @@ window.addToWatchlist = (code, live) => {
     toast(`${code} masuk Watchlist`);
 };
 
+
+let scrSearchTimeout;
+if ($('scr-code')) {
+    $('scr-code').addEventListener('input', () => {
+        clearTimeout(scrSearchTimeout);
+        scrSearchTimeout = setTimeout(() => {
+            if (window.runScreener) window.runScreener();
+        }, 500);
+    });
+}
+
 if ($('btn-run-screener')) {
     $('btn-run-screener').addEventListener('click', runScreener);
 }

@@ -1281,10 +1281,10 @@ window.addFilterRow = () => {
     row.id = `filter-row-${id}`;
     row.style = 'display:flex; flex-wrap:wrap; gap:4px; align-items:center; background:var(--bg-2); padding:8px; border-radius:8px;';
     
-    const fHtml = renderCustomSelect(`fr-field-${id}`, TV_FIELDS, TV_FIELDS[0].val, 'add-input', 'flex:1; min-width:110px; font-size:12px; padding:0 6px;');
-    const oHtml = renderCustomSelect(`fr-op-${id}`, TV_OPS, TV_OPS[0].val, 'add-input', 'flex:1; min-width:80px; font-size:12px; padding:0 6px;');
-    const tHtml = renderCustomSelect(`fr-type-${id}`, [{val:'num',label:'Val'},{val:'ind',label:'Ind'}], 'num', 'add-input', 'width:75px; font-size:12px; padding:0 6px; border-top-right-radius:0; border-bottom-right-radius:0;');
-    const viHtml = renderCustomSelect(`fr-val-ind-${id}`, TV_FIELDS, TV_FIELDS[0].val, 'add-input', 'display:none; flex:1; font-size:12px; padding:0 6px; border-top-left-radius:0; border-bottom-left-radius:0;');
+    const fHtml = renderCustomSelect(`fr-field-${id}`, TV_FIELDS, TV_FIELDS[0].val, 'add-input', 'flex:1; min-width:110px; font-size:calc(12px - var(--fs-diff, 0px)); padding:0 6px;');
+    const oHtml = renderCustomSelect(`fr-op-${id}`, TV_OPS, TV_OPS[0].val, 'add-input', 'flex:1; min-width:80px; font-size:calc(12px - var(--fs-diff, 0px)); padding:0 6px;');
+    const tHtml = renderCustomSelect(`fr-type-${id}`, [{val:'num',label:'Val'},{val:'ind',label:'Ind'}], 'num', 'add-input', 'width:75px; font-size:calc(12px - var(--fs-diff, 0px)); padding:0 6px; border-top-right-radius:0; border-bottom-right-radius:0;');
+    const viHtml = renderCustomSelect(`fr-val-ind-${id}`, TV_FIELDS, TV_FIELDS[0].val, 'add-input', 'display:none; flex:1; font-size:calc(12px - var(--fs-diff, 0px)); padding:0 6px; border-top-left-radius:0; border-bottom-left-radius:0;');
 
     row.innerHTML = `
         ${fHtml}

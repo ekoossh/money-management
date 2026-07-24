@@ -2634,3 +2634,9 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
     color: #a3e635;
     font-weight: 500;
 }
+
+#scr-templates-container .filter-chip.active {
+    color: var(--primary);
+    border-color: rgba(212, 255, 0, 0.35);
+    background: rgba(212, 255, 0, 0.08);
+}

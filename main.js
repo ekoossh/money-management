@@ -1180,6 +1180,10 @@ $('filter-bar').addEventListener('click', e => {
 
     toast('Memuat data...', 'info');
     fetch(API_URL + '?pin=' + encodeURIComponent(getPin())).then(r => r.json()).then(data => {
+        if(data && data.status === 'error') {
+            toast('Gagal memuat: ' + (data.message || 'Error tidak diketahui'), 'err');
+            return;
+        }
         if(data && data.list) list = data.list;
         if(data && data.watchList) {
             window.wList = data.watchList;

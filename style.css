@@ -2667,20 +2667,21 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
 /* ==================== STOCK DETAIL PANEL ==================== */
 .detail-panel {
     position: fixed;
-    top: 136px;
+    /* top will be set by JS dynamically */
     bottom: 0;
     right: 0;
-    width: 85%;
+    width: calc(100% - 90px); /* Leave 90px for Symbol column */
     max-width: 500px;
-    height: auto;
-    background: var(--bg-0);
+    background: var(--bg-2); /* slightly lighter for contrast */
     z-index: 151;
     transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Prevent panel scrolling */
     box-shadow: -8px 0 24px rgba(0,0,0,0.8);
     border-left: 1px solid var(--border-1);
+    border-top-left-radius: 12px;
 }
 .detail-panel.active {
     transform: translateX(0);
@@ -2702,17 +2703,19 @@ body.font-sedang .wl-table.movers-table .icon-btn svg { width: 12px !important; 
 }
 .dp-body {
     flex: 1;
-    overflow-y: auto;
+    overflow: hidden;
     padding: 16px;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 .dp-footer {
     padding: 16px;
     background: var(--bg-1);
     border-top: 1px solid var(--border-1);
     display: flex;
-    gap: 8px;
+    justify-content: center;
+    gap: 12px;
     flex-shrink: 0;
 }
 

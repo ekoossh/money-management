@@ -229,7 +229,7 @@ input[type=number] { -moz-appearance: textfield; }
     letter-spacing: -0.01em;
 }
 .topbar-title p {
-    font-size: calc(12px - var(--fs-diff, 0px));
+    font-size: calc(14px - var(--fs-diff, 0px));
     color: var(--text-3);
     margin-top: 4px;
 }

@@ -1677,6 +1677,9 @@ window.screenerCustomPresets = JSON.parse(localStorage.getItem('screenerCustomPr
 window.currentCustomPresetName = '';
 
 window.updatePresetSelect = () => {
+    // FORCE ALERT TO PROVE EXECUTION
+    if (window.alert) alert('updatePresetSelect terpanggil!');
+    
     try {
         let wrapper = $('scr-preset-wrapper');
         
@@ -1719,7 +1722,7 @@ window.updatePresetSelect = () => {
         wrapper.style.minHeight = '30px';
         wrapper.style.flex = '1';
         
-        wrapper.innerHTML = renderCustomSelect('scr-preset-select', opts, val, 'field-input', 'flex:1; min-height:30px; border:2px solid red;');
+        wrapper.innerHTML = '<button onclick="alert(\'Diklik\')" style="background:blue;color:white;width:100px;height:40px;padding:10px;font-size:14px;border-radius:8px;border:none;">TEST BTN</button>' + renderCustomSelect('scr-preset-select', opts, val, 'field-input', 'flex:1; min-height:30px; border:2px solid red;');
         
         // Visual indicator that it ran
         if (typeof toast === 'function') toast('Preset Select Diperbarui!');

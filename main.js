@@ -1180,6 +1180,12 @@ $('filter-bar').addEventListener('click', e => {
 
     toast('Memuat data...', 'info');
     fetch(API_URL + '?pin=' + encodeURIComponent(getPin())).then(r => r.json()).then(data => {
+        if(data && data.list) list = data.list;
+        if(data && data.watchList) {
+            window.wList = data.watchList;
+            if (window.renderWatchlist) window.renderWatchlist();
+        }
+        
         if(data && data.cfg) {
             cfg = Object.assign(cfg, data.cfg);
             if (data.cfg.telegramToken) localStorage.setItem('mm_tg_token', data.cfg.telegramToken);
@@ -1197,11 +1203,6 @@ $('filter-bar').addEventListener('click', e => {
         }
         if (!cfg.telegramToken) cfg.telegramToken = localStorage.getItem('mm_tg_token') || '';
         if (!cfg.telegramChatId) cfg.telegramChatId = localStorage.getItem('mm_tg_chatid') || '';
-        if(data && data.list) list = data.list;
-        if(data && data.watchList) {
-            window.wList = data.watchList;
-            if (window.renderWatchlist) window.renderWatchlist();
-        }
         updDash();
         renderTable();
         syncPricesAndTriggers(false);

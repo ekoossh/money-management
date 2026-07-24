@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="style.css?v=20260724_1417">
+<link rel="stylesheet" href="style.css?v=20260724_1442">
 </head>
 <body>
 
@@ -568,12 +568,11 @@
             </button>
         </div>
         <div class="add-popup-form" id="screener-custom-ui" style="padding-bottom:12px; max-height: 65vh; overflow-y: auto;">
-                    <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center;">
-                        <div id="scr-preset-wrapper" style="flex:1; min-width:0;">
-                            <!-- populated by updatePresetSelect -->
+                    <div style="display:flex; align-items:flex-start; margin-bottom:16px;">
+                        <span style="font-size:12px; font-weight:600; color:var(--text-3); padding-top:6px; margin-right:12px; width:65px;">Templates:</span>
+                        <div id="scr-templates-container" style="display:flex; flex-wrap:wrap; gap:8px; flex:1;">
+                            <!-- populated by renderTemplates -->
                         </div>
-                        <button class="btn btn-secondary" onclick="if(window.saveCustomPreset) window.saveCustomPreset()" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0;">Save</button>
-                        <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="padding:8px 12px; font-size:12px; white-space:nowrap; flex-shrink:0;">Save As</button>
                     </div>
 
 
@@ -586,14 +585,28 @@
                     <button class="btn" id="btn-add-filter" style="width:100%; padding:10px; border:1px dashed var(--border-2); background:var(--bg-2); color:var(--text-2); margin-bottom:12px; font-size:13px; font-weight:500; border-radius:8px; display:flex; justify-content:center; align-items:center;">
                         + Tambah Kriteria
                     </button>
-                    <button class="btn btn-primary" id="btn-run-screener" style="width:100%; padding:12px; display:flex !important; justify-content:center !important; align-items:center !important; gap:8px;" onclick="if(window.runScreener) window.runScreener()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;flex-shrink:0;"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> <span style="font-weight:600; font-size:14px; padding-top:1px;">Run Screener</span>
-                    </button>
+                    <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; justify-content:space-between;">
+                        <button class="btn btn-secondary" onclick="if(window.clearAllFilters) window.clearAllFilters()" style="flex:1; min-width:80px; padding:10px 8px; font-size:12px; font-weight:600;">Clear All</button>
+                        <div style="display:flex; gap:8px; flex:2; min-width:160px;">
+                            <button class="btn btn-secondary" onclick="if(window.saveAsCustomPreset) window.saveAsCustomPreset()" style="flex:1; padding:10px 8px; font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:4px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save As
+                            </button>
+                            <button class="btn btn-secondary" onclick="if(window.saveCustomPreset) window.saveCustomPreset()" style="flex:1; padding:10px 8px; font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; gap:4px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save
+                            </button>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-secondary" id="btn-set-autoscan" onclick="if(window.setAutoScan) window.setAutoScan()" style="flex:1; padding:12px 8px; font-size:13px; font-weight:600; white-space:nowrap; background:var(--bg-3);">Set Auto-Scan</button>
+                        <button class="btn btn-primary" id="btn-run-screener" style="flex:1.2; padding:12px 8px; display:flex !important; justify-content:center !important; align-items:center !important; gap:8px;" onclick="if(window.runScreener) window.runScreener()">
+                            <span style="font-weight:600; font-size:14px; padding-top:1px;">Run Screener</span>
+                        </button>
+                    </div>
                 </div>
     </div>
 </div>
 
-<script src="main.js?v=20260724_1417"></script>
+<script src="main.js?v=20260724_1442"></script>
 
     <!-- Row Action Modal (Bottom Sheet) -->
     <div class="modal-backdrop hidden" id="row-action-modal" style="z-index: 200;">

@@ -53,7 +53,6 @@ document.addEventListener('click', e => {
         opt.classList.add('selected');
         
         // Trigger specific logic
-        if (hidden.id === 'scr-preset-select' && window.loadCustomPreset) window.loadCustomPreset();
         if (hidden.id.startsWith('fr-type-') && window.toggleFilterType) window.toggleFilterType(hidden.id.split('-')[2]);
         
         e.stopPropagation();
@@ -250,6 +249,22 @@ const navigate = target => {
     const btnAdd = $('btn-add');
     if (btnAdd) {
         btnAdd.style.display = (target === 'tradeplan') ? 'flex' : 'none';
+    }
+    
+    // Auto-Scan logic
+    if (target === 'screener') {
+        if (cfg.screenerAutoScan && window.screenerCustomPresets && window.screenerCustomPresets[cfg.screenerAutoScan]) {
+            if (window.loadCustomPreset) window.loadCustomPreset(cfg.screenerAutoScan);
+            window.currentScreenerPreset = 'custom';
+            document.querySelectorAll('#screener-filter-bar .filter-chip').forEach(c => c.classList.remove('active'));
+            const customChip = document.querySelector('#screener-filter-bar .filter-chip'); // The first one is Custom
+            if (customChip && customChip.textContent === 'Custom') customChip.classList.add('active');
+            
+            if (window.runScreener) {
+                // Short delay to let UI settle
+                setTimeout(() => window.runScreener(), 100);
+            }
+        }
     }
 
     closeSidebar();
@@ -1202,7 +1217,7 @@ $('filter-bar').addEventListener('click', e => {
                 window.screenerCustomPresets = {};
                 localStorage.setItem('screenerCustomPresets', '{}');
             }
-            if (window.updatePresetSelect) window.updatePresetSelect();
+            if (window.renderTemplates) window.renderTemplates();
         }
         if (!cfg.telegramToken) cfg.telegramToken = localStorage.getItem('mm_tg_token') || '';
         if (!cfg.telegramChatId) cfg.telegramChatId = localStorage.getItem('mm_tg_chatid') || '';
@@ -1667,7 +1682,7 @@ window.setScreenerPreset = (val, el) => {
     const chips = document.querySelectorAll('#screener-filter-bar .filter-chip');
     
     if (val === 'custom') {
-        try { if (window.updatePresetSelect) window.updatePresetSelect(); } catch(e) {}
+        try { if (window.renderTemplates) window.renderTemplates(); } catch(e) {}
         
         // Just open the modal, don't change active chip yet until they click run
         const bd = document.getElementById('screener-custom-backdrop');
@@ -1709,24 +1724,70 @@ if(sClose) {
 window.screenerCustomPresets = JSON.parse(localStorage.getItem('screenerCustomPresets') || '{}') || {};
 window.currentCustomPresetName = '';
 
-window.updatePresetSelect = () => {
+window.renderTemplates = () => {
     try {
-        const opts = [{val:'', label:'-- Pilih Preset Tersimpan --'}];
+        const container = document.getElementById('scr-templates-container');
+        if (!container) return;
         const presets = window.screenerCustomPresets || {};
-        Object.keys(presets).forEach(k => opts.push({val:k, label:k}));
-        
-        let val = window.currentCustomPresetName || '';
-        if (val && !presets[val]) val = '';
-        
-        const selectHtml = renderCustomSelect('scr-preset-select', opts, val, 'add-input', 'flex:1; min-width:0; font-size:13px; padding:0 8px;');
-        
-        let wrapper = document.getElementById('scr-preset-wrapper');
-        if (wrapper) {
-            wrapper.innerHTML = selectHtml;
+        const keys = Object.keys(presets);
+        if (keys.length === 0) {
+            container.innerHTML = '<span style="font-size:12px; color:var(--text-3); font-style:italic; padding-top:6px;">Belum ada template</span>';
+            return;
         }
+        let html = '';
+        keys.forEach(k => {
+            const isSel = (k === window.currentCustomPresetName);
+            const autoScanStr = (cfg.screenerAutoScan === k) ? ' ⭐' : '';
+            if (isSel) {
+                html += `<div class="filter-chip active" style="padding-right:2px; display:flex; align-items:center;">
+                            <span onclick="window.loadCustomPreset('${k.replace(/'/g, "\'")}')">${k}${autoScanStr}</span>
+                            <span onclick="window.deleteCustomPreset('${k.replace(/'/g, "\'")}')" style="margin-left:4px; padding:2px 6px; font-size:14px; font-weight:bold; cursor:pointer; color:var(--down);">&times;</span>
+                         </div>`;
+            } else {
+                html += `<div class="filter-chip" onclick="window.loadCustomPreset('${k.replace(/'/g, "\'")}')">${k}${autoScanStr}</div>`;
+            }
+        });
+        container.innerHTML = html;
     } catch(e) {
-        console.error('Error rendering preset select:', e);
+        console.error('Error rendering templates:', e);
     }
+};
+
+window.deleteCustomPreset = (name) => {
+    if (!confirm('Hapus template "' + name + '"?')) return;
+    delete window.screenerCustomPresets[name];
+    if (window.currentCustomPresetName === name) window.currentCustomPresetName = '';
+    if (cfg.screenerAutoScan === name) {
+        cfg.screenerAutoScan = '';
+    }
+    cfg.screenerCustomPresets = window.screenerCustomPresets;
+    save();
+    window.renderTemplates();
+};
+
+window.clearAllFilters = () => {
+    window.currentCustomPresetName = '';
+    const container = document.getElementById('filter-rows-container');
+    if (container) container.innerHTML = '';
+    window.renderTemplates();
+};
+
+window.setAutoScan = () => {
+    if (!window.currentCustomPresetName) {
+        if (confirm("Kosongkan Auto-Scan? (Screener tidak akan berjalan otomatis)")) {
+            cfg.screenerAutoScan = '';
+            save();
+            window.renderTemplates();
+            toast("Auto-Scan dimatikan ✓");
+        } else if (document.getElementById('filter-rows-container') && document.getElementById('filter-rows-container').children.length > 0) {
+            toast('Silakan Save filter ini dulu sebelum di set Auto-Scan', 'err');
+        }
+        return;
+    }
+    cfg.screenerAutoScan = window.currentCustomPresetName;
+    save();
+    window.renderTemplates();
+    toast("Auto-Scan diset ke " + window.currentCustomPresetName + " ✓");
 };
 
 window.saveAsCustomPreset = () => {
@@ -1767,7 +1828,7 @@ function savePresetWithName(name) {
         localStorage.setItem('screenerCustomPresets', JSON.stringify(window.screenerCustomPresets));
         window.currentCustomPresetName = name;
         
-        if (window.updatePresetSelect) window.updatePresetSelect();
+        if (window.renderTemplates) window.renderTemplates();
         
         toast(`Preset "${name}" berhasil disimpan!`, 'ok');
         
@@ -1782,15 +1843,14 @@ function savePresetWithName(name) {
     }
 }
 
-window.loadCustomPreset = () => {
-    const sel = $('scr-preset-select');
-    if (!sel) return;
-    const name = sel.value;
+window.loadCustomPreset = (name) => {
     if (!name || !window.screenerCustomPresets[name]) {
         window.currentCustomPresetName = '';
+        if (window.renderTemplates) window.renderTemplates();
         return;
     }
     window.currentCustomPresetName = name;
+    if (window.renderTemplates) window.renderTemplates();
     const data = window.screenerCustomPresets[name];
     if ($('scr-code')) $('scr-code').value = data.code || '';
     
@@ -1841,6 +1901,6 @@ window.loadCustomPreset = () => {
 // Initialize preset select on load
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
-        if (window.updatePresetSelect) window.updatePresetSelect();
+        if (window.renderTemplates) window.renderTemplates();
     }, 500);
 });

@@ -424,50 +424,7 @@ const checkAutoTriggers = (prices) => {
 
         const now = Date.now();
 
-        // 1. Order Limit (Breakout Strategy: Trigger BUY when price RISES to or above Buy Price)
-        if (status === 'order' && buyPrice > 0 && dayHigh >= buyPrice) {
-            if (slPrice > 0 && dayLow <= slPrice) {
-                row.status = 'sl';
-                if (!row.history) row.history = {};
-                row.history.sl = now;
-                row.updatedAt = now;
-                toast(`🛑 ${code} menyentuh Breakout BUY & langsung Stop Loss (Low: ${fmtIDR(dayLow)})!`, 'err');
-            } else if (tpPrice > 0 && dayHigh >= tpPrice) {
-                row.status = 'tp';
-                if (!row.history) row.history = {};
-                row.history.tp = now;
-                row.updatedAt = now;
-                toast(`🎯 ${code} menyentuh Breakout BUY & langsung Hit TP (High: ${fmtIDR(dayHigh)})!`, 'info');
-            } else {
-                row.status = 'running';
-                if (!row.history) row.history = {};
-                row.history.running = now;
-                row.updatedAt = now;
-                row.dateAdded = new Date(now).toLocaleDateString('id-ID', {day:'2-digit', month:'short'});
-                toast(`🚀 ${code} breakout & menyentuh target BUY (High: ${fmtIDR(dayHigh)})! Status otomatis diubah ke Running.`, 'info');
-            }
-            changed = true;
-        }
 
-        // 2. Running -> Hit TP or Hit SL
-        else if (status === 'running') {
-            if (tpPrice > 0 && dayHigh >= tpPrice) {
-                row.status = 'tp';
-                if (!row.history) row.history = {};
-                row.history.tp = now;
-                row.updatedAt = now;
-                toast(`🎯 ${code} menyentuh Target TP (High: ${fmtIDR(dayHigh)})! Status otomatis diubah ke Hit TP.`, 'info');
-                changed = true;
-            }
-            else if (slPrice > 0 && dayLow <= slPrice) {
-                row.status = 'sl';
-                if (!row.history) row.history = {};
-                row.history.sl = now;
-                row.updatedAt = now;
-                toast(`🛑 ${code} menyentuh Stop Loss (Low: ${fmtIDR(dayLow)})! Status otomatis diubah ke Hit SL.`, 'err');
-                changed = true;
-            }
-        }
     });
 
     return changed;

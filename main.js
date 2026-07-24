@@ -1472,7 +1472,7 @@ const runScreener = () => {
         symbols: symbols,
         columns: ["name","description","close","change_abs","change","Value.Traded","volume"],
         sort: sort,
-        range: [0, 30]
+        range: [0, 100]
     });
 
     const tvUrl = 'https://scanner.tradingview.com/indonesia/scan';

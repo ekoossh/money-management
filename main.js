@@ -1703,24 +1703,6 @@ window.updatePresetSelect = () => {
         console.error('Error rendering preset select:', e);
     }
 };
-        Object.keys(presets).forEach(k => opts.push({val:k, label:k}));
-        
-        let val = window.currentCustomPresetName || '';
-        if (val && !presets[val]) val = '';
-        
-        // Force some CSS on wrapper just in case
-        wrapper.style.display = 'block';
-        wrapper.style.visibility = 'visible';
-        wrapper.style.opacity = '1';
-        wrapper.style.minHeight = '30px';
-        wrapper.style.flex = '1';
-        
-        wrapper.innerHTML = renderCustomSelect('scr-preset-select', opts, val, 'add-input', 'flex:1; min-width:110px; font-size:13px; padding:0 4px;');
-        
-    } catch(e) {
-        console.error('Error rendering preset select:', e);
-    }
-};
 
 window.saveAsCustomPreset = () => {
     const name = prompt("Masukkan nama untuk preset ini:");
